@@ -18,6 +18,7 @@ import { Route as DiagnoseRouteImport } from './routes/diagnose'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PlotsRouteImport } from './routes/plots'
 import { Route as RecommendRouteImport } from './routes/recommend'
+import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as WeatherRouteImport } from './routes/weather'
 import { Route as YieldRouteImport } from './routes/yield'
 
@@ -66,6 +67,11 @@ const RecommendRoute = RecommendRouteImport.update({
   path: '/recommend',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WeatherRoute = WeatherRouteImport.update({
   id: '/weather',
   path: '/weather',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
+  '/reports': typeof ReportsRoute
   '/weather': typeof WeatherRoute
   '/yield': typeof YieldRoute
 }
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
+  '/reports': typeof ReportsRoute
   '/weather': typeof WeatherRoute
   '/yield': typeof YieldRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
+  '/reports': typeof ReportsRoute
   '/weather': typeof WeatherRoute
   '/yield': typeof YieldRoute
 }
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/plots'
     | '/recommend'
+    | '/reports'
     | '/weather'
     | '/yield'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/plots'
     | '/recommend'
+    | '/reports'
     | '/weather'
     | '/yield'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/plots'
     | '/recommend'
+    | '/reports'
     | '/weather'
     | '/yield'
   fileRoutesById: FileRoutesById
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   PlotsRoute: typeof PlotsRoute
   RecommendRoute: typeof RecommendRoute
+  ReportsRoute: typeof ReportsRoute
   WeatherRoute: typeof WeatherRoute
   YieldRoute: typeof YieldRoute
 }
@@ -238,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecommendRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/weather': {
       id: '/weather'
       path: '/weather'
@@ -265,19 +285,10 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   PlotsRoute: PlotsRoute,
   RecommendRoute: RecommendRoute,
+  ReportsRoute: ReportsRoute,
   WeatherRoute: WeatherRoute,
   YieldRoute: YieldRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

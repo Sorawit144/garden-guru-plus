@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CostsRouteImport } from './routes/costs'
 import { Route as DiagnoseRouteImport } from './routes/diagnose'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -33,6 +34,11 @@ const AssistantRoute = AssistantRouteImport.update({
 const CalendarRoute = CalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CostsRoute = CostsRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
   '/calendar': typeof CalendarRoute
+  '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
   '/notifications': typeof NotificationsRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
   '/calendar': typeof CalendarRoute
+  '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
   '/notifications': typeof NotificationsRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
   '/calendar': typeof CalendarRoute
+  '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
   '/notifications': typeof NotificationsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/calendar'
+    | '/community'
     | '/costs'
     | '/diagnose'
     | '/notifications'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/calendar'
+    | '/community'
     | '/costs'
     | '/diagnose'
     | '/notifications'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/calendar'
+    | '/community'
     | '/costs'
     | '/diagnose'
     | '/notifications'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssistantRoute: typeof AssistantRoute
   CalendarRoute: typeof CalendarRoute
+  CommunityRoute: typeof CommunityRoute
   CostsRoute: typeof CostsRoute
   DiagnoseRoute: typeof DiagnoseRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/costs': {
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssistantRoute: AssistantRoute,
   CalendarRoute: CalendarRoute,
+  CommunityRoute: CommunityRoute,
   CostsRoute: CostsRoute,
   DiagnoseRoute: DiagnoseRoute,
   NotificationsRoute: NotificationsRoute,
@@ -250,3 +271,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

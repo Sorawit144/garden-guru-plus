@@ -15,6 +15,7 @@ import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CostsRouteImport } from './routes/costs'
 import { Route as DiagnoseRouteImport } from './routes/diagnose'
+import { Route as MoreRouteImport } from './routes/more'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PlotsRouteImport } from './routes/plots'
 import { Route as RecommendRouteImport } from './routes/recommend'
@@ -50,6 +51,11 @@ const CostsRoute = CostsRouteImport.update({
 const DiagnoseRoute = DiagnoseRouteImport.update({
   id: '/diagnose',
   path: '/diagnose',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoreRoute = MoreRouteImport.update({
+  id: '/more',
+  path: '/more',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
+  '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
+  '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
+  '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/costs'
     | '/diagnose'
+    | '/more'
     | '/notifications'
     | '/plots'
     | '/recommend'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/costs'
     | '/diagnose'
+    | '/more'
     | '/notifications'
     | '/plots'
     | '/recommend'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/costs'
     | '/diagnose'
+    | '/more'
     | '/notifications'
     | '/plots'
     | '/recommend'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   CostsRoute: typeof CostsRoute
   DiagnoseRoute: typeof DiagnoseRoute
+  MoreRoute: typeof MoreRoute
   NotificationsRoute: typeof NotificationsRoute
   PlotsRoute: typeof PlotsRoute
   RecommendRoute: typeof RecommendRoute
@@ -228,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/diagnose'
       fullPath: '/diagnose'
       preLoaderRoute: typeof DiagnoseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/more': {
+      id: '/more'
+      path: '/more'
+      fullPath: '/more'
+      preLoaderRoute: typeof MoreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   CostsRoute: CostsRoute,
   DiagnoseRoute: DiagnoseRoute,
+  MoreRoute: MoreRoute,
   NotificationsRoute: NotificationsRoute,
   PlotsRoute: PlotsRoute,
   RecommendRoute: RecommendRoute,

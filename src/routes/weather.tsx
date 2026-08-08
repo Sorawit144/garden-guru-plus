@@ -19,7 +19,7 @@ function WeatherPage() {
   const w = weather.now;
   return (
     <AppShell title="สภาพอากาศ" subtitle="ตำบลบางกะปิ · อัปเดตเมื่อ 5 นาทีที่แล้ว">
-      <Card className="gradient-leaf border-0 text-primary-foreground">
+      <Card className="bg-primary border-0 text-primary-foreground">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-5xl font-bold">{w.temp}°</p>
@@ -42,7 +42,7 @@ function WeatherPage() {
         </div>
       </Card>
 
-      <Card className="flex items-start gap-3 border-sun/50 bg-sun/10">
+      <Card className="flex items-start gap-3 border-primary/30 bg-primary/10">
         <span className="text-xl">⛈️</span>
         <div>
           <p className="text-sm font-semibold">แจ้งเตือนฝน</p>
@@ -59,7 +59,7 @@ function WeatherPage() {
             <div key={h.t} className="min-w-16 rounded-xl bg-muted/60 px-3 py-2 text-center">
               <p className="text-[11px] text-muted-foreground">{h.t}</p>
               <p className="text-sm font-semibold">{h.temp}°</p>
-              <p className="text-[11px] text-sky">{h.rain}%</p>
+              <p className="text-[11px] text-primary">{h.rain}%</p>
             </div>
           ))}
         </div>
@@ -71,7 +71,7 @@ function WeatherPage() {
           <div key={d.d} className="flex items-center gap-3">
             <span className="w-20 text-sm">{d.d}</span>
             <span className="text-lg">{d.icon}</span>
-            <span className="flex-1 text-xs text-sky">ฝน {d.rain}%</span>
+            <span className="flex-1 text-xs text-primary">ฝน {d.rain}%</span>
             <span className="text-sm font-medium">
               {d.hi}° <span className="text-muted-foreground">{d.lo}°</span>
             </span>
@@ -82,7 +82,7 @@ function WeatherPage() {
       <SectionTitle>ผลต่อการทำสวน</SectionTitle>
       <Card className="space-y-3">
         <div className="flex items-center gap-3">
-          <Droplets className="size-5 text-sky" />
+          <Droplets className="size-5 text-primary" />
           <p className="text-sm">งดรดน้ำวันนี้ ประหยัดน้ำได้ประมาณ 4,500 ลิตร</p>
         </div>
         <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ function WeatherPage() {
           <p className="text-sm">ลมปานกลาง ยังฉีดพ่นได้ในช่วงเช้าตรู่</p>
         </div>
         <div className="flex items-center gap-3">
-          <Sun className="size-5 text-sun-foreground" />
+          <Sun className="size-5 text-primary" />
           <p className="text-sm">UV สูง ควรทำงานกลางแจ้งก่อน 10:00 น.</p>
         </div>
       </Card>

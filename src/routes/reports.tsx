@@ -26,7 +26,7 @@ function ReportsPage() {
             <BarChart data={monthlyFinance}>
               <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={11} />
               <Tooltip formatter={(v: number) => baht(v)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
-              <Bar dataKey="income" fill="var(--color-leaf)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="income" fill="var(--color-primary)" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

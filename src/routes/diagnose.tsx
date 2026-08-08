@@ -38,7 +38,7 @@ function DiagnosePage() {
         <div className="flex w-full gap-2">
           <button
             onClick={run}
-            className="gradient-leaf flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-primary-foreground"
+            className="bg-primary flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-primary-foreground"
           >
             <Camera className="size-4" /> ถ่ายรูป
           </button>
@@ -78,7 +78,7 @@ function DiagnosePage() {
 
           <Card className="space-y-3">
             <div className="flex items-start gap-3">
-              <Bug className="mt-0.5 size-5 text-sun-foreground" />
+              <Bug className="mt-0.5 size-5 text-primary" />
               <div>
                 <p className="text-sm font-medium">แมลงศัตรูพืช</p>
                 <p className="text-xs text-muted-foreground">{diagnoseResult.pest}</p>

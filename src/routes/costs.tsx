@@ -56,7 +56,7 @@ function CostsPage() {
                 contentStyle={{ borderRadius: 12, fontSize: 12 }}
               />
               <Bar dataKey="income" fill="var(--color-primary)" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="cost" fill="var(--color-sun)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="cost" fill="var(--chart-2)" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/community")({
 function CommunityPage() {
   return (
     <AppShell title="ชุมชนชาวสวน" subtitle="ถามตอบ แชร์ความรู้ ข่าวเกษตร">
-      <button className="gradient-leaf flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold text-primary-foreground">
+      <button className="bg-primary flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold text-primary-foreground">
         <PenLine className="size-4" /> ตั้งกระทู้ใหม่
       </button>
 
@@ -27,7 +27,7 @@ function CommunityPage() {
           <span
             key={f}
             className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium ${
-              i === 0 ? "gradient-leaf text-primary-foreground" : "border border-border bg-card"
+              i === 0 ? "bg-primary text-primary-foreground" : "border border-border bg-card"
             }`}
           >
             {f}

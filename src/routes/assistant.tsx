@@ -53,7 +53,7 @@ function AssistantPage() {
             <div
               className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm whitespace-pre-line ${
                 m.role === "user"
-                  ? "gradient-leaf rounded-br-sm text-primary-foreground"
+                  ? "bg-primary rounded-br-sm text-primary-foreground"
                   : "rounded-bl-sm bg-muted text-foreground"
               }`}
             >
@@ -91,7 +91,7 @@ function AssistantPage() {
         <button
           type="submit"
           aria-label="ส่งข้อความ"
-          className="gradient-leaf flex size-12 shrink-0 items-center justify-center rounded-full text-primary-foreground shadow-[var(--shadow-card)]"
+          className="bg-primary flex size-12 shrink-0 items-center justify-center rounded-full text-primary-foreground shadow-[var(--shadow-card)]"
         >
           <Send className="size-5" />
         </button>

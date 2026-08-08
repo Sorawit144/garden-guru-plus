@@ -21,7 +21,7 @@ function PlotsPage() {
 
   return (
     <AppShell title="จัดการแปลง" subtitle={`ทั้งหมด ${plots.length} แปลง · ${plots.reduce((s, p) => s + p.area, 0)} ไร่`}>
-      <button className="gradient-leaf flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-card)]">
+      <button className="bg-primary flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-card)]">
         <Plus className="size-4" /> เพิ่มแปลงจากตำแหน่ง GPS
       </button>
 

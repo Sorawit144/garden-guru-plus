@@ -30,7 +30,7 @@ function CalendarPage() {
           {calendarTasks.map((d, i) => (
             <div
               key={d.date}
-              className={`rounded-xl py-2 ${i === 0 ? "gradient-leaf text-primary-foreground" : "bg-muted/50"}`}
+              className={`rounded-xl py-2 ${i === 0 ? "bg-primary text-primary-foreground" : "bg-muted/50"}`}
             >
               <p className="text-[10px] opacity-80">{d.day}</p>
               <p className="text-sm font-semibold">{d.date}</p>
@@ -47,7 +47,7 @@ function CalendarPage() {
         </div>
       </Card>
 
-      <button className="gradient-leaf flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold text-primary-foreground">
+      <button className="bg-primary flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold text-primary-foreground">
         <Plus className="size-4" /> เพิ่มงานใหม่
       </button>
 

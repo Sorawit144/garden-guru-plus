@@ -154,10 +154,10 @@ export const transactions = [
 ];
 
 export const costBreakdown = [
-  { name: "ปุ๋ย", value: 12500, color: "var(--color-primary)" },
-  { name: "แรงงาน", value: 4800, color: "var(--color-leaf)" },
-  { name: "สารเคมี", value: 3600, color: "var(--color-sun)" },
-  { name: "พลังงาน", value: 1800, color: "var(--color-sky)" },
+  { name: "ปุ๋ย", value: 12500, color: "var(--chart-3)" },
+  { name: "แรงงาน", value: 4800, color: "var(--chart-1)" },
+  { name: "สารเคมี", value: 3600, color: "var(--chart-4)" },
+  { name: "พลังงาน", value: 1800, color: "var(--chart-2)" },
 ];
 
 export const monthlyFinance = [

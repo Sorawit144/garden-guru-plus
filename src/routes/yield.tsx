@@ -22,7 +22,7 @@ function YieldPage() {
 
   return (
     <AppShell title="คาดการณ์ผลผลิต" subtitle="ฤดูกาล 2569 · อัปเดตรายสัปดาห์">
-      <Card className="gradient-sun border-0 text-sun-foreground">
+      <Card className="bg-primary border-0 text-primary-foreground">
         <p className="text-sm opacity-80">ผลผลิตรวมที่คาดการณ์</p>
         <p className="text-4xl font-bold">{totalKg.toLocaleString("th-TH")} กก.</p>
         <div className="mt-3 grid grid-cols-2 gap-2">

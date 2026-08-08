@@ -28,7 +28,7 @@ function Dashboard() {
 
   return (
     <AppShell title="สวัสดี ชาวสวน 👋" subtitle="ศุกร์ที่ 7 สิงหาคม 2569">
-      <Card className="gradient-leaf border-0 text-primary-foreground">
+      <Card className="bg-primary border-0 text-primary-foreground">
         <p className="text-sm text-primary-foreground/85">สุขภาพสวนโดยรวม</p>
         <div className="mt-1 flex items-end gap-2">
           <span className="text-4xl font-bold">{avgHealth}</span>
@@ -59,7 +59,7 @@ function Dashboard() {
             <p className="text-xs text-muted-foreground">สภาพอากาศ</p>
             <p className="mt-1 text-2xl font-bold">{weather.now.temp}°</p>
             <p className="text-xs text-muted-foreground">{weather.now.condition}</p>
-            <p className="mt-2 text-xs text-sky">โอกาสฝน {weather.now.rainChance}%</p>
+            <p className="mt-2 text-xs text-primary">โอกาสฝน {weather.now.rainChance}%</p>
           </Card>
         </Link>
         <Link to="/recommend">
@@ -175,7 +175,7 @@ function Dashboard() {
       <Card className="space-y-3">
         {notifications.slice(0, 3).map((n) => (
           <div key={n.id} className="flex items-start gap-3">
-            <span className="mt-1 size-2 shrink-0 rounded-full bg-sun" />
+            <span className="mt-1 size-2 shrink-0 rounded-full bg-primary" />
             <div className="min-w-0 flex-1">
               <p className="text-sm">{n.title}</p>
               <p className="text-xs text-muted-foreground">

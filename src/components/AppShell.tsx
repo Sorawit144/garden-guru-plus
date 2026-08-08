@@ -22,7 +22,7 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-secondary/40">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background shadow-[var(--shadow-soft)]">
-        <header className="gradient-leaf sticky top-0 z-20 rounded-b-3xl px-5 pt-6 pb-6 text-primary-foreground">
+        <header className="sticky top-0 z-20 bg-primary px-5 pt-6 pb-6 text-primary-foreground">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h1 className="text-xl font-bold tracking-tight">{title}</h1>
@@ -36,7 +36,7 @@ export function AppShell({
               aria-label="การแจ้งเตือน"
             >
               <Bell className="size-5" />
-              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-sun" />
+              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-warning" />
             </Link>
           </div>
         </header>
@@ -93,10 +93,10 @@ export function Badge({
 }) {
   const tones: Record<string, string> = {
     muted: "bg-muted text-muted-foreground",
-    good: "bg-primary-soft text-primary",
-    warn: "bg-sun/25 text-sun-foreground",
+    good: "bg-primary text-primary-foreground",
+    warn: "bg-primary-soft text-primary",
     bad: "bg-destructive/15 text-destructive",
-    info: "bg-sky/20 text-foreground",
+    info: "bg-primary-soft text-primary",
   };
   return (
     <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${tones[tone]}`}>
@@ -108,7 +108,7 @@ export function Badge({
 export function Progress({ value }: { value: number }) {
   return (
     <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-      <div className="gradient-leaf h-full rounded-full" style={{ width: `${value}%` }} />
+      <div className="h-full rounded-full bg-primary" style={{ width: `${value}%` }} />
     </div>
   );
 }

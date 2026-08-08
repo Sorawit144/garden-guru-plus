@@ -43,18 +43,18 @@ export function AppShell({
 
         <main className="flex-1 space-y-4 px-4 pt-4 pb-28">{children}</main>
 
-        <nav className="fixed bottom-0 z-30 w-full max-w-md border-t border-border bg-card/95 px-2 pt-2 pb-3 backdrop-blur">
-          <ul className="flex items-center justify-between">
+        <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <ul className="flex items-center justify-between gap-1 rounded-3xl border border-border bg-card/90 p-1.5 shadow-[var(--shadow-soft)] backdrop-blur-xl">
             {navItems.map((item) => (
-              <li key={item.to} className="flex-1">
+              <li key={item.to} className="min-w-0 flex-1">
                 <Link
                   to={item.to}
                   activeOptions={{ exact: item.exact }}
-                  className="flex flex-col items-center gap-1 rounded-xl py-1.5 text-[11px] font-medium text-muted-foreground transition-colors data-[status=active]:text-primary"
-                  activeProps={{ className: "text-primary" }}
+                  aria-label={item.label}
+                  className="group flex flex-col items-center gap-1 rounded-2xl px-1 py-2 text-[11px] font-medium text-muted-foreground transition-all duration-200 active:scale-95 data-[status=active]:bg-primary-soft data-[status=active]:text-primary"
                 >
-                  <item.icon className="size-5" />
-                  {item.label}
+                  <item.icon className="size-5 shrink-0 transition-transform duration-200 group-data-[status=active]:-translate-y-0.5" />
+                  <span className="w-full truncate text-center leading-none">{item.label}</span>
                 </Link>
               </li>
             ))}

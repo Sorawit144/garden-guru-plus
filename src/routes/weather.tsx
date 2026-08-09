@@ -52,8 +52,30 @@ function WeatherPage() {
         </div>
       </Card>
 
+      <SectionTitle>เตือนก่อนลงมือทำงาน</SectionTitle>
+      <div className="space-y-3">
+        {stageAlerts.map((a) => (
+          <Card key={a.id}>
+            <div className="flex items-start gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-lg">
+                {a.icon}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold">{a.stage}</p>
+                  <Badge tone={a.tone}>{a.verdict}</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {a.plot} · {a.when}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{a.detail}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
       <SectionTitle>รายชั่วโมง</SectionTitle>
-      <div className="hidden" />
       <Card>
         <div className="flex gap-3 overflow-x-auto pb-1">
           {weather.hourly.map((h) => (

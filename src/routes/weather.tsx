@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Droplets, Sun, Wind } from "lucide-react";
-import { AppShell, Card, SectionTitle } from "@/components/AppShell";
-import { weather } from "@/lib/farm-data";
+import { AppShell, Badge, Card, SectionTitle } from "@/components/AppShell";
+import { stageAlerts, weather } from "@/lib/farm-data";
 
 export const Route = createFileRoute("/weather")({
   head: () => ({
@@ -53,6 +53,7 @@ function WeatherPage() {
       </Card>
 
       <SectionTitle>รายชั่วโมง</SectionTitle>
+      <div className="hidden" />
       <Card>
         <div className="flex gap-3 overflow-x-auto pb-1">
           {weather.hourly.map((h) => (

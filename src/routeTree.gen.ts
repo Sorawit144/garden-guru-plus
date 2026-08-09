@@ -16,7 +16,9 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CostsRouteImport } from './routes/costs'
 import { Route as DiagnoseRouteImport } from './routes/diagnose'
 import { Route as DisasterRouteImport } from './routes/disaster'
+import { Route as FertilizerRouteImport } from './routes/fertilizer'
 import { Route as MarketRouteImport } from './routes/market'
+import { Route as MonitorRouteImport } from './routes/monitor'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PlotsRouteImport } from './routes/plots'
@@ -60,9 +62,19 @@ const DisasterRoute = DisasterRouteImport.update({
   path: '/disaster',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FertilizerRoute = FertilizerRouteImport.update({
+  id: '/fertilizer',
+  path: '/fertilizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketRoute = MarketRouteImport.update({
   id: '/market',
   path: '/market',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonitorRoute = MonitorRouteImport.update({
+  id: '/monitor',
+  path: '/monitor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoreRoute = MoreRouteImport.update({
@@ -109,7 +121,9 @@ export interface FileRoutesByFullPath {
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
   '/disaster': typeof DisasterRoute
+  '/fertilizer': typeof FertilizerRoute
   '/market': typeof MarketRoute
+  '/monitor': typeof MonitorRoute
   '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
@@ -126,7 +140,9 @@ export interface FileRoutesByTo {
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
   '/disaster': typeof DisasterRoute
+  '/fertilizer': typeof FertilizerRoute
   '/market': typeof MarketRoute
+  '/monitor': typeof MonitorRoute
   '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
@@ -144,7 +160,9 @@ export interface FileRoutesById {
   '/costs': typeof CostsRoute
   '/diagnose': typeof DiagnoseRoute
   '/disaster': typeof DisasterRoute
+  '/fertilizer': typeof FertilizerRoute
   '/market': typeof MarketRoute
+  '/monitor': typeof MonitorRoute
   '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
   '/plots': typeof PlotsRoute
@@ -163,7 +181,9 @@ export interface FileRouteTypes {
     | '/costs'
     | '/diagnose'
     | '/disaster'
+    | '/fertilizer'
     | '/market'
+    | '/monitor'
     | '/more'
     | '/notifications'
     | '/plots'
@@ -180,7 +200,9 @@ export interface FileRouteTypes {
     | '/costs'
     | '/diagnose'
     | '/disaster'
+    | '/fertilizer'
     | '/market'
+    | '/monitor'
     | '/more'
     | '/notifications'
     | '/plots'
@@ -197,7 +219,9 @@ export interface FileRouteTypes {
     | '/costs'
     | '/diagnose'
     | '/disaster'
+    | '/fertilizer'
     | '/market'
+    | '/monitor'
     | '/more'
     | '/notifications'
     | '/plots'
@@ -215,7 +239,9 @@ export interface RootRouteChildren {
   CostsRoute: typeof CostsRoute
   DiagnoseRoute: typeof DiagnoseRoute
   DisasterRoute: typeof DisasterRoute
+  FertilizerRoute: typeof FertilizerRoute
   MarketRoute: typeof MarketRoute
+  MonitorRoute: typeof MonitorRoute
   MoreRoute: typeof MoreRoute
   NotificationsRoute: typeof NotificationsRoute
   PlotsRoute: typeof PlotsRoute
@@ -276,11 +302,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DisasterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fertilizer': {
+      id: '/fertilizer'
+      path: '/fertilizer'
+      fullPath: '/fertilizer'
+      preLoaderRoute: typeof FertilizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/market': {
       id: '/market'
       path: '/market'
       fullPath: '/market'
       preLoaderRoute: typeof MarketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/monitor': {
+      id: '/monitor'
+      path: '/monitor'
+      fullPath: '/monitor'
+      preLoaderRoute: typeof MonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/more': {
@@ -343,7 +383,9 @@ const rootRouteChildren: RootRouteChildren = {
   CostsRoute: CostsRoute,
   DiagnoseRoute: DiagnoseRoute,
   DisasterRoute: DisasterRoute,
+  FertilizerRoute: FertilizerRoute,
   MarketRoute: MarketRoute,
+  MonitorRoute: MonitorRoute,
   MoreRoute: MoreRoute,
   NotificationsRoute: NotificationsRoute,
   PlotsRoute: PlotsRoute,

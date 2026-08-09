@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Droplets, Sun, Wind } from "lucide-react";
-import { AppShell, Card, SectionTitle } from "@/components/AppShell";
-import { weather } from "@/lib/farm-data";
+import { AppShell, Badge, Card, SectionTitle } from "@/components/AppShell";
+import { stageAlerts, weather } from "@/lib/farm-data";
 
 export const Route = createFileRoute("/weather")({
   head: () => ({
@@ -51,6 +51,29 @@ function WeatherPage() {
           </p>
         </div>
       </Card>
+
+      <SectionTitle>เตือนก่อนลงมือทำงาน</SectionTitle>
+      <div className="space-y-3">
+        {stageAlerts.map((a) => (
+          <Card key={a.id}>
+            <div className="flex items-start gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-lg">
+                {a.icon}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold">{a.stage}</p>
+                  <Badge tone={a.tone}>{a.verdict}</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {a.plot} · {a.when}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{a.detail}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
 
       <SectionTitle>รายชั่วโมง</SectionTitle>
       <Card>

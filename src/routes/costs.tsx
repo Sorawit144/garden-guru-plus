@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -9,7 +10,7 @@ import {
   Tooltip,
   XAxis,
 } from "recharts";
-import { AppShell, Card, SectionTitle, baht } from "@/components/AppShell";
+import { AppShell, Badge, Card, SectionTitle, baht } from "@/components/AppShell";
 import { costBreakdown, monthlyFinance, transactions } from "@/lib/farm-data";
 
 export const Route = createFileRoute("/costs")({
@@ -25,8 +26,34 @@ export const Route = createFileRoute("/costs")({
 });
 
 function CostsPage() {
-  const income = transactions.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
-  const cost = transactions.filter((t) => t.amount < 0).reduce((s, t) => s + t.amount, 0);
+  const [rows, setRows] = useState(transactions);
+  const [open, setOpen] = useState(false);
+  const [kind, setKind] = useState<"income" | "expense">("income");
+  const [title, setTitle] = useState("");
+  const [amount, setAmount] = useState("");
+  const [kg, setKg] = useState("");
+
+  const income = rows.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+  const cost = rows.filter((t) => t.amount < 0).reduce((s, t) => s + t.amount, 0);
+
+  const save = () => {
+    const n = Number(amount);
+    if (!title.trim() || !n) return;
+    setRows([
+      {
+        id: `new-${Date.now()}`,
+        date: "7 ส.ค.",
+        title: kg ? `${title} (${kg} กก.)` : title,
+        category: kind === "income" ? "รายได้" : "ค่าใช้จ่าย",
+        amount: kind === "income" ? n : -n,
+      },
+      ...rows,
+    ]);
+    setTitle("");
+    setAmount("");
+    setKg("");
+    setOpen(false);
+  };
 
   return (
     <AppShell title="ต้นทุนและรายได้" subtitle="สิงหาคม 2569">
@@ -44,6 +71,66 @@ function CostsPage() {
           <p className="text-sm font-bold">{baht(income + cost)}</p>
         </Card>
       </div>
+
+      <Card className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold">จดบันทึกครั้งนี้</p>
+            <p className="text-xs text-muted-foreground">รายรับ รายจ่าย และผลผลิตที่ได้</p>
+          </div>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="rounded-xl bg-primary px-3 py-2 text-xs font-medium text-primary-foreground active:scale-95"
+          >
+            {open ? "ปิด" : "+ บันทึก"}
+          </button>
+        </div>
+        {open ? (
+          <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              {(["income", "expense"] as const).map((k) => (
+                <button
+                  key={k}
+                  onClick={() => setKind(k)}
+                  className={`rounded-xl border py-2 text-xs font-medium ${
+                    kind === k ? "border-primary bg-primary-soft text-primary" : "border-border"
+                  }`}
+                >
+                  {k === "income" ? "รายรับ" : "รายจ่าย"}
+                </button>
+              ))}
+            </div>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="รายการ เช่น ขายทุเรียนล็อต 4"
+              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value.replace(/\D/g, ""))}
+                inputMode="numeric"
+                placeholder="จำนวนเงิน (บาท)"
+                className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+              <input
+                value={kg}
+                onChange={(e) => setKg(e.target.value.replace(/\D/g, ""))}
+                inputMode="numeric"
+                placeholder="ผลผลิต (กก.)"
+                className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+            </div>
+            <button
+              onClick={save}
+              className="w-full rounded-xl bg-primary py-2.5 text-sm font-medium text-primary-foreground active:scale-[0.99]"
+            >
+              บันทึกรายการ
+            </button>
+          </div>
+        ) : null}
+      </Card>
 
       <SectionTitle>รายรับ-รายจ่าย 6 เดือน</SectionTitle>
       <Card>
@@ -88,7 +175,7 @@ function CostsPage() {
 
       <SectionTitle>รายการล่าสุด</SectionTitle>
       <Card className="space-y-3">
-        {transactions.map((t) => (
+        {rows.map((t) => (
           <div key={t.id} className="flex items-center gap-3">
             <span className="flex size-9 items-center justify-center rounded-xl bg-muted text-sm">
               {t.amount > 0 ? "💵" : "🧾"}
@@ -106,6 +193,10 @@ function CostsPage() {
             </span>
           </div>
         ))}
+        <div className="flex items-center justify-between border-t border-border pt-3">
+          <span className="text-sm font-medium">ทั้งหมด {rows.length} รายการ</span>
+          <Badge tone="good">กำไร {baht(income + cost)}</Badge>
+        </div>
       </Card>
     </AppShell>
   );

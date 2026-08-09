@@ -256,3 +256,99 @@ export const assistantReplies: Record<string, string> = {
   "ราคามังคุดตอนนี้เป็นอย่างไร":
     "ราคามังคุดอ้างอิงล่าสุด (ข้อมูลตัวอย่าง)\n\n- เกรดส่งออก (มัน A): 68-75 บาท/กก.\n- เกรดคละ: 42-48 บาท/กก.\n- ตกไซซ์: 18-22 บาท/กก.\n\nแนวโน้มสัปดาห์นี้ทรงตัวถึงปรับขึ้นเล็กน้อย แนะนำทยอยเก็บเกี่ยวผลที่แก่จัดก่อนครับ",
 };
+// ---- แจ้งเตือนสภาพอากาศตามช่วงงาน (ก่อนปลูก / ก่อนใส่ปุ๋ย / ก่อนเก็บเกี่ยว) ----
+export const stageAlerts = [
+  {
+    id: "s1",
+    stage: "ก่อนปลูก",
+    icon: "🌱",
+    plot: "แปลงลำไยแปลงใหม่",
+    when: "9–11 ส.ค.",
+    verdict: "เหมาะสม",
+    tone: "good" as const,
+    detail: "ฝน 20% ดินชื้นพอดี อุณหภูมิ 27–34° เหมาะกับการลงกล้าและตั้งตัวของราก",
+  },
+  {
+    id: "s2",
+    stage: "ก่อนใส่ปุ๋ย",
+    icon: "🌿",
+    plot: "แปลงมังคุดริมคลอง",
+    when: "พรุ่งนี้ 06:00",
+    verdict: "ควรเลื่อน",
+    tone: "warn" as const,
+    detail: "ฝนหนัก 80% ปุ๋ยเม็ดจะถูกชะล้าง สูญเสียได้ถึง 30% แนะนำใส่วันอาทิตย์แทน",
+  },
+  {
+    id: "s3",
+    stage: "ก่อนเก็บเกี่ยว",
+    icon: "🧺",
+    plot: "แปลงทุเรียนหลังบ้าน",
+    when: "อีก 12 วัน",
+    verdict: "เฝ้าระวัง",
+    tone: "warn" as const,
+    detail: "ช่วงเก็บเกี่ยวมีโอกาสฝน 45% ควรเตรียมผ้าใบคลุมและวางแผนเก็บช่วงเช้า",
+  },
+];
+
+// ---- น้ำท่วม & ภัยแล้ง ----
+export const disasterStatus = {
+  level: "เฝ้าระวังน้ำหลาก",
+  waterLevel: 2.4, // เมตร
+  waterLevelChange: +0.35,
+  soilMoisture: 68,
+  rain7d: 142, // มม.
+  droughtIndex: 22, // 0-100 ยิ่งสูงยิ่งแล้ง
+};
+
+export const disasterAreas = [
+  { id: "d1", name: "แปลงทุเรียนหลังบ้าน", status: "ปกติ", risk: 18, note: "ระบายน้ำดี ไม่มีน้ำขัง" },
+  { id: "d2", name: "แปลงมังคุดริมคลอง", status: "เสี่ยงน้ำท่วม", risk: 74, note: "ระดับคลองสูงขึ้น 35 ซม. ใน 24 ชม." },
+  { id: "d3", name: "แปลงลำไยแปลงใหม่", status: "เสี่ยงแล้ง", risk: 58, note: "ความชื้นดิน 31% ต่ำกว่าเกณฑ์" },
+  { id: "d4", name: "พื้นที่รอบข้าง ต.บางกะปิ", status: "เฝ้าระวัง", risk: 46, note: "มีรายงานน้ำล้นตลิ่ง 2 จุดใกล้เคียง" },
+];
+
+export const damageRecords = [
+  { id: "dr1", date: "3 ส.ค. 2569", event: "น้ำท่วมขัง 12 ชม.", plot: "แปลงมังคุดริมคลอง", area: 2.5, loss: 18000, photos: 6, status: "พร้อมยื่นเอกสาร" },
+  { id: "dr2", date: "18 ก.ค. 2569", event: "ฝนทิ้งช่วง 21 วัน", plot: "แปลงลำไยแปลงใหม่", area: 4, loss: 9500, photos: 3, status: "บันทึกแล้ว" },
+];
+
+// ---- ราคาตลาด ----
+export const marketPrices = [
+  { id: "m1", name: "ทุเรียนหมอนทอง (ส่งออก)", unit: "บาท/กก.", price: 128, change: 4.5, market: "ตลาดไท", updated: "วันนี้ 07:30" },
+  { id: "m2", name: "ทุเรียนหมอนทอง (คละ)", unit: "บาท/กก.", price: 96, change: 1.2, market: "ล้งจันทบุรี", updated: "วันนี้ 07:30" },
+  { id: "m3", name: "มังคุด มัน A", unit: "บาท/กก.", price: 72, change: -2.8, market: "ตลาดไท", updated: "วันนี้ 06:50" },
+  { id: "m4", name: "มังคุด คละเกรด", unit: "บาท/กก.", price: 45, change: 0, market: "ตลาดกลางจันทบุรี", updated: "วันนี้ 06:50" },
+  { id: "m5", name: "ลำไยอีดอ เกรด AA", unit: "บาท/กก.", price: 38, change: 3.1, market: "ตลาดกลางลำพูน", updated: "วันนี้ 08:00" },
+];
+
+export const priceTrend = [
+  { d: "1 ส.ค.", durian: 118, mangosteen: 68 },
+  { d: "2 ส.ค.", durian: 120, mangosteen: 70 },
+  { d: "3 ส.ค.", durian: 119, mangosteen: 74 },
+  { d: "4 ส.ค.", durian: 123, mangosteen: 76 },
+  { d: "5 ส.ค.", durian: 125, mangosteen: 73 },
+  { d: "6 ส.ค.", durian: 124, mangosteen: 71 },
+  { d: "7 ส.ค.", durian: 128, mangosteen: 72 },
+];
+
+// ---- ติดตามความสมบูรณ์รายสัปดาห์ ----
+export const weeklyHealth = [
+  { w: "สัปดาห์ 1", durian: 82, mangosteen: 78, longan: 70 },
+  { w: "สัปดาห์ 2", durian: 84, mangosteen: 76, longan: 68 },
+  { w: "สัปดาห์ 3", durian: 86, mangosteen: 75, longan: 65 },
+  { w: "สัปดาห์ 4", durian: 87, mangosteen: 74, longan: 63 },
+  { w: "สัปดาห์ 5", durian: 88, mangosteen: 72, longan: 61 },
+];
+
+export const weeklyChecks = [
+  { id: "w1", plot: "แปลงทุเรียนหลังบ้าน", score: 88, trend: +1, status: "สมบูรณ์ดี", next: "ตรวจครั้งถัดไป 14 ส.ค.", issues: [] as string[] },
+  { id: "w2", plot: "แปลงมังคุดริมคลอง", score: 72, trend: -2, status: "ควรเฝ้าระวัง", next: "ตรวจครั้งถัดไป 12 ส.ค.", issues: ["ใบเริ่มซีดที่ยอด", "ความชื้นดินสูงต่อเนื่อง"] },
+  { id: "w3", plot: "แปลงลำไยแปลงใหม่", score: 61, trend: -2, status: "ต้องแก้ไข", next: "ตรวจด่วนภายใน 2 วัน", issues: ["ขาดแมกนีเซียม", "พบเพลี้ยไฟระยะเริ่มต้น"] },
+];
+
+// ---- คำนวณปุ๋ยโดรน ----
+export const dronePresets = [
+  { id: "f1", crop: "ทุเรียน", stage: "สะสมอาหาร", formula: "8-24-24", ratePerRai: 12 },
+  { id: "f2", crop: "มังคุด", stage: "ติดผลอ่อน", formula: "12-12-17", ratePerRai: 9 },
+  { id: "f3", crop: "ลำไย", stage: "บำรุงใบ", formula: "20-20-20", ratePerRai: 7 },
+];

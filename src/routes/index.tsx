@@ -53,6 +53,20 @@ function Dashboard() {
         </div>
       </Card>
 
+      <div className="grid grid-cols-4 gap-2">
+        {[
+          { to: "/market" as const, icon: "🏷️", label: "ราคาตลาด" },
+          { to: "/disaster" as const, icon: "🌊", label: "ท่วม/แล้ง" },
+          { to: "/monitor" as const, icon: "🩺", label: "เฝ้าระวัง" },
+          { to: "/fertilizer" as const, icon: "🚁", label: "ปุ๋ยโดรน" },
+        ].map((q) => (
+          <Link key={q.to} to={q.to} className="surface-card flex flex-col items-center gap-1 p-3">
+            <span className="text-xl">{q.icon}</span>
+            <span className="text-[11px] text-muted-foreground">{q.label}</span>
+          </Link>
+        ))}
+      </div>
+
       <div className="grid grid-cols-2 gap-3">
         <Link to="/weather">
           <Card className="h-full">

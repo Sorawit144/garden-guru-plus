@@ -58,7 +58,6 @@ function Dashboard() {
           { to: "/market" as const, icon: "🏷️", label: "ราคาตลาด" },
           { to: "/disaster" as const, icon: "🌊", label: "ท่วม/แล้ง" },
           { to: "/monitor" as const, icon: "🩺", label: "เฝ้าระวัง" },
-          { to: "/fertilizer" as const, icon: "🚁", label: "ปุ๋ยโดรน" },
         ].map((q) => (
           <Link key={q.to} to={q.to} className="surface-card flex flex-col items-center gap-1 p-3">
             <span className="text-xl">{q.icon}</span>

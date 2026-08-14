@@ -345,10 +345,3 @@ export const weeklyChecks = [
   { id: "w2", plot: "แปลงมังคุดริมคลอง", score: 72, trend: -2, status: "ควรเฝ้าระวัง", next: "ตรวจครั้งถัดไป 12 ส.ค.", issues: ["ใบเริ่มซีดที่ยอด", "ความชื้นดินสูงต่อเนื่อง"] },
   { id: "w3", plot: "แปลงลำไยแปลงใหม่", score: 61, trend: -2, status: "ต้องแก้ไข", next: "ตรวจด่วนภายใน 2 วัน", issues: ["ขาดแมกนีเซียม", "พบเพลี้ยไฟระยะเริ่มต้น"] },
 ];
-
-// ---- คำนวณปุ๋ยโดรน ----
-export const dronePresets = [
-  { id: "f1", crop: "ทุเรียน", stage: "สะสมอาหาร", formula: "8-24-24", ratePerRai: 12 },
-  { id: "f2", crop: "มังคุด", stage: "ติดผลอ่อน", formula: "12-12-17", ratePerRai: 9 },
-  { id: "f3", crop: "ลำไย", stage: "บำรุงใบ", formula: "20-20-20", ratePerRai: 7 },
-];

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, Card, SectionTitle } from "@/components/AppShell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/more")({
   head: () => ({
@@ -53,6 +54,17 @@ function MorePage() {
         <div>
           <p className="text-sm font-semibold">สวนคุณสมชาย</p>
           <p className="text-xs text-muted-foreground">3 แปลง · 25 ไร่ · จ.จันทบุรี</p>
+        </div>
+      </Card>
+
+      <SectionTitle>การแสดงผล</SectionTitle>
+      <Card className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold">โหมดมืด / โหมดสว่าง</p>
+          <p className="text-xs text-muted-foreground">แตะปุ่มเพื่อสลับธีมของแอป</p>
+        </div>
+        <div className="rounded-full bg-primary p-0.5 text-primary-foreground">
+          <ThemeToggle />
         </div>
       </Card>
     </AppShell>

@@ -43,18 +43,23 @@ export function AppShell({
 
         <main className="flex-1 space-y-4 px-4 pt-4 pb-28">{children}</main>
 
-        <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <ul className="flex items-center justify-between gap-1 rounded-3xl border border-border bg-card/90 p-1.5 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+        <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md px-4 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
+          <ul className="flex items-stretch justify-between gap-1 rounded-[1.75rem] border border-border/70 bg-card/85 p-2 shadow-[var(--shadow-soft)] ring-1 ring-black/[0.03] backdrop-blur-2xl">
             {navItems.map((item) => (
               <li key={item.to} className="min-w-0 flex-1">
                 <Link
                   to={item.to}
                   activeOptions={{ exact: item.exact }}
                   aria-label={item.label}
-                  className="group flex flex-col items-center gap-1 rounded-2xl px-1 py-2 text-[11px] font-medium text-muted-foreground transition-all duration-200 active:scale-95 data-[status=active]:bg-primary-soft data-[status=active]:text-primary"
+                  className="group relative flex flex-col items-center gap-1.5 rounded-[1.35rem] px-1 py-2.5 text-[11px] font-medium text-muted-foreground transition-all duration-300 hover:bg-muted/60 active:scale-95 data-[status=active]:bg-primary data-[status=active]:text-primary-foreground data-[status=active]:shadow-[var(--shadow-card)]"
                 >
-                  <item.icon className="size-5 shrink-0 transition-transform duration-200 group-data-[status=active]:-translate-y-0.5" />
-                  <span className="w-full truncate text-center leading-none">{item.label}</span>
+                  <item.icon
+                    className="size-5 shrink-0 transition-transform duration-300 group-data-[status=active]:-translate-y-0.5 group-data-[status=active]:scale-110"
+                    strokeWidth={2}
+                  />
+                  <span className="w-full truncate text-center leading-none tracking-tight">
+                    {item.label}
+                  </span>
                 </Link>
               </li>
             ))}

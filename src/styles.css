@@ -5,9 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans:
-    "Noto Sans Thai", "IBM Plex Sans Thai", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Anuphan", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Anuphan", ui-sans-serif, system-ui, sans-serif;
 }
 
 /*

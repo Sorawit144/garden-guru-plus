@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, Home, LayoutGrid, Leaf, MessageCircle, ScanLine } from "lucide-react";
 import type { ReactNode } from "react";
+import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navItems = [
@@ -21,21 +22,30 @@ export function AppShell({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-secondary/40">
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background shadow-[var(--shadow-soft)]">
-        <header className="sticky top-0 z-20 bg-primary px-5 pt-6 pb-6 text-primary-foreground">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_var(--color-primary-soft),_transparent_38%)]">
+      <div className="app-frame mx-auto flex min-h-screen w-full max-w-md flex-col bg-background">
+        <header className="sticky top-0 z-20 overflow-hidden bg-primary px-5 pt-[max(1.35rem,env(safe-area-inset-top))] pb-5 text-primary-foreground shadow-[0_8px_22px_-16px_oklch(0.25_0.08_145_/_0.85)]">
+          <div className="pointer-events-none absolute inset-0 opacity-30 [background:radial-gradient(circle_at_100%_0%,white_0%,transparent_35%),radial-gradient(circle_at_0%_100%,oklch(0.25_0.08_145)_0%,transparent_42%)]" />
           <div className="flex items-start justify-between gap-3">
-            <div>
-              <h1 className="text-xl font-bold tracking-tight">{title}</h1>
-              {subtitle ? (
-                <p className="mt-1 text-sm text-primary-foreground/80">{subtitle}</p>
-              ) : null}
+            <div className="relative flex min-w-0 items-start gap-3">
+              <BrandMark
+                size="sm"
+                className="mt-0.5 bg-white/15 text-primary-foreground shadow-none"
+              />
+              <div className="min-w-0">
+                <h1 className="text-[1.35rem] font-bold leading-tight tracking-tight">{title}</h1>
+                {subtitle ? (
+                  <p className="mt-1 text-[13px] leading-relaxed text-primary-foreground/80">
+                    {subtitle}
+                  </p>
+                ) : null}
+              </div>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="relative flex shrink-0 items-center gap-2">
               <ThemeToggle />
               <Link
                 to="/notifications"
-                className="relative rounded-full bg-white/15 p-2.5 transition-colors hover:bg-white/25"
+                className="relative rounded-2xl border border-white/10 bg-white/10 p-2.5 transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 aria-label="การแจ้งเตือน"
               >
                 <Bell className="size-5" />
@@ -45,17 +55,17 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 space-y-4 px-4 pt-4 pb-28">{children}</main>
+        <main className="flex-1 space-y-5 px-4 pt-5 pb-32">{children}</main>
 
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md px-4 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
-          <ul className="flex items-stretch justify-between gap-1 rounded-[1.75rem] border border-border/70 bg-card/85 p-2 shadow-[var(--shadow-soft)] ring-1 ring-black/[0.03] backdrop-blur-2xl">
+          <ul className="flex items-stretch justify-between gap-1 rounded-[1.75rem] border border-border/70 bg-card/90 p-2 shadow-[0_16px_34px_-16px_oklch(0.22_0.05_145_/_0.38)] ring-1 ring-black/[0.03] backdrop-blur-2xl">
             {navItems.map((item) => (
               <li key={item.to} className="min-w-0 flex-1">
                 <Link
                   to={item.to}
                   activeOptions={{ exact: item.exact }}
                   aria-label={item.label}
-                  className="group relative flex flex-col items-center gap-1.5 rounded-[1.35rem] px-1 py-2.5 text-[11px] font-medium text-muted-foreground transition-all duration-300 hover:bg-muted/60 active:scale-95 data-[status=active]:bg-primary data-[status=active]:text-primary-foreground data-[status=active]:shadow-[var(--shadow-card)]"
+                  className="group relative flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-[1.35rem] px-1 py-2 text-[11px] font-medium text-muted-foreground transition-all duration-300 hover:bg-muted/60 active:scale-95 data-[status=active]:bg-primary data-[status=active]:text-primary-foreground data-[status=active]:shadow-[var(--shadow-card)]"
                 >
                   <item.icon
                     className="size-5 shrink-0 transition-transform duration-300 group-data-[status=active]:-translate-y-0.5 group-data-[status=active]:scale-110"
@@ -74,20 +84,14 @@ export function AppShell({
   );
 }
 
-export function Card({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <div className={`surface-card p-4 ${className}`}>{children}</div>;
 }
 
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex items-center justify-between px-1 pt-2">
-      <h2 className="text-base font-semibold text-foreground">{children}</h2>
+    <div className="flex items-center justify-between px-1 pt-1">
+      <h2 className="text-[15px] font-bold tracking-tight text-foreground">{children}</h2>
       {action}
     </div>
   );
@@ -122,5 +126,4 @@ export function Progress({ value }: { value: number }) {
   );
 }
 
-export const baht = (n: number) =>
-  `${n < 0 ? "-" : ""}฿${Math.abs(n).toLocaleString("th-TH")}`;
+export const baht = (n: number) => `${n < 0 ? "-" : ""}฿${Math.abs(n).toLocaleString("th-TH")}`;

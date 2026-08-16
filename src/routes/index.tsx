@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import {
+  ArrowUpRight,
+  ChevronRight,
+  CloudSun,
+  Droplets,
+  Sparkles,
+  Sprout,
+  Tags,
+} from "lucide-react";
 import { AppShell, Badge, Card, Progress, SectionTitle, baht } from "@/components/AppShell";
+import { BrandMark } from "@/components/BrandMark";
 import { notifications, todayTasks, weather } from "@/lib/farm-data";
 import { usePlots } from "@/hooks/usePlots";
 
@@ -24,7 +34,8 @@ export const Route = createFileRoute("/")({
 
 function Dashboard() {
   const { plots } = usePlots();
-  const avgHealth = plots.length > 0 ? Math.round(plots.reduce((s, p) => s + p.health, 0) / plots.length) : 0;
+  const avgHealth =
+    plots.length > 0 ? Math.round(plots.reduce((s, p) => s + p.health, 0) / plots.length) : 0;
   const area = plots.reduce((s, p) => s + p.area, 0);
 
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -48,60 +59,108 @@ function Dashboard() {
   const cost = transactions.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
   return (
-    <AppShell title="สวัสดี ชาวสวน 👋" subtitle="ศุกร์ที่ 7 สิงหาคม 2569">
-      <Card className="bg-primary border-0 text-primary-foreground">
-        <p className="text-sm text-primary-foreground/85">สุขภาพสวนโดยรวม</p>
-        <div className="mt-1 flex items-end gap-2">
-          <span className="text-4xl font-bold">{avgHealth}</span>
-          <span className="mb-1 text-sm text-primary-foreground/85">/ 100 · ดี</span>
+    <AppShell title="สวัสดี ชาวสวน" subtitle="ศุกร์ที่ 7 สิงหาคม 2569">
+      <Card className="relative overflow-hidden border-0 bg-primary px-5 py-5 text-primary-foreground shadow-[0_18px_30px_-20px_oklch(0.25_0.08_145_/_0.85)]">
+        <div className="pointer-events-none absolute -right-8 -top-12 size-44 rounded-full bg-white/10 blur-2xl" />
+        <div className="relative flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-primary-foreground/80">สุขภาพสวนโดยรวม</p>
+            <div className="mt-1 flex items-end gap-2">
+              <span className="text-4xl font-bold tracking-tight">{avgHealth}</span>
+              <span className="mb-1 text-sm text-primary-foreground/85">/ 100 · ดี</span>
+            </div>
+          </div>
+          <BrandMark size="md" className="border border-white/15 bg-white/15 shadow-none" />
         </div>
-        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/25">
+        <div className="relative mt-4 h-2 w-full overflow-hidden rounded-full bg-white/25">
           <div className="h-full rounded-full bg-white/90" style={{ width: `${avgHealth}%` }} />
         </div>
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-          <div className="rounded-xl bg-white/15 py-2">
+        <div className="relative mt-5 grid grid-cols-3 gap-2 text-center">
+          <div className="rounded-2xl border border-white/10 bg-white/10 py-2.5">
             <p className="text-lg font-bold">{plots.length}</p>
             <p className="text-[11px] text-primary-foreground/80">แปลง</p>
           </div>
-          <div className="rounded-xl bg-white/15 py-2">
+          <div className="rounded-2xl border border-white/10 bg-white/10 py-2.5">
             <p className="text-lg font-bold">{area}</p>
             <p className="text-[11px] text-primary-foreground/80">ไร่</p>
           </div>
-          <div className="rounded-xl bg-white/15 py-2">
+          <div className="rounded-2xl border border-white/10 bg-white/10 py-2.5">
             <p className="text-lg font-bold">{plots.reduce((s, p) => s + p.trees, 0)}</p>
             <p className="text-[11px] text-primary-foreground/80">ต้น</p>
           </div>
         </div>
       </Card>
 
-      <div className="grid grid-cols-4 gap-2">
-        {[
-          { to: "/market" as const, icon: "🏷️", label: "ราคาตลาด" },
-          { to: "/disaster" as const, icon: "🌊", label: "ท่วม/แล้ง" },
-          { to: "/monitor" as const, icon: "🩺", label: "เฝ้าระวัง" },
-        ].map((q) => (
-          <Link key={q.to} to={q.to} className="surface-card flex flex-col items-center gap-1 p-3">
-            <span className="text-xl">{q.icon}</span>
-            <span className="text-[11px] text-muted-foreground">{q.label}</span>
+      <div>
+        <div className="mb-3 flex items-center justify-between px-1">
+          <h2 className="text-[15px] font-bold tracking-tight">ทางลัดสำหรับวันนี้</h2>
+          <Link
+            to="/more"
+            className="inline-flex items-center gap-0.5 text-xs font-semibold text-primary"
+          >
+            ทั้งหมด <ChevronRight className="size-3.5" />
           </Link>
-        ))}
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            {
+              to: "/market" as const,
+              icon: Tags,
+              label: "ราคาตลาด",
+              tone: "bg-amber-50 text-amber-700",
+            },
+            {
+              to: "/disaster" as const,
+              icon: Droplets,
+              label: "ท่วม/แล้ง",
+              tone: "bg-sky-50 text-sky-700",
+            },
+            {
+              to: "/monitor" as const,
+              icon: Sprout,
+              label: "เฝ้าระวัง",
+              tone: "bg-emerald-50 text-emerald-700",
+            },
+          ].map((q) => (
+            <Link
+              key={q.to}
+              to={q.to}
+              className="surface-card group flex min-h-24 flex-col items-center justify-center gap-2 p-3 transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+            >
+              <span className={`flex size-10 items-center justify-center rounded-2xl ${q.tone}`}>
+                <q.icon className="size-5" />
+              </span>
+              <span className="text-xs font-medium text-foreground">{q.label}</span>
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <Link to="/weather">
-          <Card className="h-full">
-            <p className="text-xs text-muted-foreground">สภาพอากาศ</p>
-            <p className="mt-1 text-2xl font-bold">{weather.now.temp}°</p>
+          <Card className="h-full transition-transform duration-200 hover:-translate-y-0.5">
+            <div className="flex items-start justify-between">
+              <p className="text-xs font-medium text-muted-foreground">สภาพอากาศ</p>
+              <CloudSun className="size-5 text-warning" />
+            </div>
+            <p className="mt-2 text-2xl font-bold tracking-tight">{weather.now.temp}°</p>
             <p className="text-xs text-muted-foreground">{weather.now.condition}</p>
-            <p className="mt-2 text-xs text-primary">โอกาสฝน {weather.now.rainChance}%</p>
+            <p className="mt-3 text-xs font-semibold text-primary">
+              โอกาสฝน {weather.now.rainChance}%
+            </p>
           </Card>
         </Link>
         <Link to="/recommend">
-          <Card className="h-full">
-            <p className="text-xs text-muted-foreground">คำแนะนำ AI วันนี้</p>
-            <p className="mt-1 text-sm font-semibold">ยังไม่ต้องรดน้ำ 💧</p>
-            <p className="mt-1 text-xs text-muted-foreground">ควรใส่ปุ๋ยแปลงมังคุด</p>
-            <p className="mt-2 text-xs text-primary">ดูทั้งหมด 4 ข้อ</p>
+          <Card className="h-full transition-transform duration-200 hover:-translate-y-0.5">
+            <div className="flex items-start justify-between">
+              <p className="text-xs font-medium text-muted-foreground">คำแนะนำ AI</p>
+              <Sparkles className="size-4 text-primary" />
+            </div>
+            <p className="mt-2 text-sm font-semibold leading-snug">ยังไม่ต้องรดน้ำ 💧</p>
+            <p className="mt-1 text-xs text-muted-foreground">ใส่ปุ๋ยแปลงมังคุด</p>
+            <p className="mt-3 inline-flex items-center gap-0.5 text-xs font-semibold text-primary">
+              ดู 4 ข้อ <ArrowUpRight className="size-3.5" />
+            </p>
           </Card>
         </Link>
       </div>
@@ -153,9 +212,7 @@ function Dashboard() {
         {plots.map((p) => (
           <Card key={p.id}>
             <div className="flex items-center gap-3">
-              <span className="flex size-11 items-center justify-center rounded-2xl bg-primary-soft text-xl">
-                {p.emoji}
-              </span>
+              <BrandMark size="md" className="bg-primary-soft text-primary shadow-none" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{p.name}</p>
                 <p className="text-xs text-muted-foreground">

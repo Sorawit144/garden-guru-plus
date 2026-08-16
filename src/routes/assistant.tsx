@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Send, Mic, RefreshCw } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { AppShell } from "@/components/AppShell";
+import { BrandMark } from "@/components/BrandMark";
 import { usePlots } from "@/hooks/usePlots";
 import { assistantSuggestions } from "@/lib/farm-data";
 
@@ -9,7 +10,10 @@ export const Route = createFileRoute("/assistant")({
   head: () => ({
     meta: [
       { title: "AI Farm Assistant — สวนอัจฉริยะ" },
-      { name: "description", content: "ถามตอบเรื่องการดูแลพืช ปุ๋ย และสารเคมี กับผู้ช่วย AI ภาษาไทย" },
+      {
+        name: "description",
+        content: "ถามตอบเรื่องการดูแลพืช ปุ๋ย และสารเคมี กับผู้ช่วย AI ภาษาไทย",
+      },
       { property: "og:title", content: "AI Farm Assistant — สวนอัจฉริยะ" },
       { property: "og:description", content: "ผู้ช่วย AI ตอบคำถามการเกษตรเป็นภาษาไทยตลอด 24 ชม." },
     ],
@@ -102,7 +106,8 @@ function buildContext(plots: any[], transactions: any[]): FarmContext {
     plots,
     totalArea: plots.reduce((s, p) => s + p.area, 0),
     totalTrees: plots.reduce((s, p) => s + p.trees, 0),
-    avgHealth: plots.length > 0 ? Math.round(plots.reduce((s, p) => s + p.health, 0) / plots.length) : 0,
+    avgHealth:
+      plots.length > 0 ? Math.round(plots.reduce((s, p) => s + p.health, 0) / plots.length) : 0,
     income: transactions.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0),
     cost: Math.abs(transactions.filter((t) => t.amount < 0).reduce((s, t) => s + t.amount, 0)),
   };
@@ -135,7 +140,9 @@ function AssistantPage() {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("garden_guru_transactions");
       if (stored) {
-        try { setTransactions(JSON.parse(stored)); } catch (e) {}
+        try {
+          setTransactions(JSON.parse(stored));
+        } catch (e) {}
       }
     }
   }, []);
@@ -186,7 +193,10 @@ function AssistantPage() {
     <AppShell title="ผู้ช่วย AI เกษตร" subtitle="ถามตอบภาษาไทย ตลอด 24 ชั่วโมง">
       {/* header action */}
       <div className="flex justify-end">
-        <button onClick={clearChat} className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-muted/50">
+        <button
+          onClick={clearChat}
+          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-muted/50"
+        >
           <RefreshCw className="size-3" /> เคลียร์แชท
         </button>
       </div>
@@ -195,11 +205,7 @@ function AssistantPage() {
       <div className="space-y-3 pb-4">
         {messages.map((m, i) => (
           <div key={i} className={m.role === "user" ? "flex justify-end" : "flex gap-2"}>
-            {m.role === "ai" && (
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-sm">
-                🌱
-              </span>
-            )}
+            {m.role === "ai" && <BrandMark size="sm" className="rounded-full" />}
             <div
               className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-sm whitespace-pre-line leading-relaxed ${
                 m.role === "user"
@@ -213,12 +219,21 @@ function AssistantPage() {
         ))}
         {loading && (
           <div className="flex gap-2">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-sm">🌱</span>
+            <BrandMark size="sm" className="rounded-full" />
             <div className="rounded-2xl rounded-bl-sm bg-muted px-3.5 py-3">
               <div className="flex gap-1">
-                <span className="size-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="size-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="size-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "300ms" }} />
+                <span
+                  className="size-2 rounded-full bg-primary/40 animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                />
+                <span
+                  className="size-2 rounded-full bg-primary/40 animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <span
+                  className="size-2 rounded-full bg-primary/40 animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                />
               </div>
             </div>
           </div>

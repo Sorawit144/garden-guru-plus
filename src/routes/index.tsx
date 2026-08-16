@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { AppShell, Badge, Card, Progress, SectionTitle, baht } from "@/components/AppShell";
-import { notifications, plots, todayTasks, weather } from "@/lib/farm-data";
+import { notifications, todayTasks, weather } from "@/lib/farm-data";
+import { usePlots } from "@/hooks/usePlots";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,10 +23,29 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const avgHealth = Math.round(plots.reduce((s, p) => s + p.health, 0) / plots.length);
+  const { plots } = usePlots();
+  const avgHealth = plots.length > 0 ? Math.round(plots.reduce((s, p) => s + p.health, 0) / plots.length) : 0;
   const area = plots.reduce((s, p) => s + p.area, 0);
-  const income = 107500;
-  const cost = 22700;
+
+  const [transactions, setTransactions] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const loadTx = () => {
+      const stored = localStorage.getItem("garden_guru_transactions");
+      if (stored) {
+        try {
+          setTransactions(JSON.parse(stored));
+        } catch (e) {}
+      }
+    };
+    loadTx();
+    window.addEventListener("transactions_updated", loadTx);
+    return () => window.removeEventListener("transactions_updated", loadTx);
+  }, []);
+
+  const income = transactions.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+  const cost = transactions.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
   return (
     <AppShell title="สวัสดี ชาวสวน 👋" subtitle="ศุกร์ที่ 7 สิงหาคม 2569">

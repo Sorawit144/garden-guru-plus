@@ -14,6 +14,7 @@ import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CostsRouteImport } from './routes/costs'
+import { Route as CropCalendarRouteImport } from './routes/crop-calendar'
 import { Route as DiagnoseRouteImport } from './routes/diagnose'
 import { Route as DisasterRouteImport } from './routes/disaster'
 import { Route as MarketRouteImport } from './routes/market'
@@ -49,6 +50,11 @@ const CommunityRoute = CommunityRouteImport.update({
 const CostsRoute = CostsRouteImport.update({
   id: '/costs',
   path: '/costs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CropCalendarRoute = CropCalendarRouteImport.update({
+  id: '/crop-calendar',
+  path: '/crop-calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiagnoseRoute = DiagnoseRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof CalendarRoute
   '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
+  '/crop-calendar': typeof CropCalendarRoute
   '/diagnose': typeof DiagnoseRoute
   '/disaster': typeof DisasterRoute
   '/market': typeof MarketRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof CalendarRoute
   '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
+  '/crop-calendar': typeof CropCalendarRoute
   '/diagnose': typeof DiagnoseRoute
   '/disaster': typeof DisasterRoute
   '/market': typeof MarketRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/calendar': typeof CalendarRoute
   '/community': typeof CommunityRoute
   '/costs': typeof CostsRoute
+  '/crop-calendar': typeof CropCalendarRoute
   '/diagnose': typeof DiagnoseRoute
   '/disaster': typeof DisasterRoute
   '/market': typeof MarketRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/community'
     | '/costs'
+    | '/crop-calendar'
     | '/diagnose'
     | '/disaster'
     | '/market'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/community'
     | '/costs'
+    | '/crop-calendar'
     | '/diagnose'
     | '/disaster'
     | '/market'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/community'
     | '/costs'
+    | '/crop-calendar'
     | '/diagnose'
     | '/disaster'
     | '/market'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   CalendarRoute: typeof CalendarRoute
   CommunityRoute: typeof CommunityRoute
   CostsRoute: typeof CostsRoute
+  CropCalendarRoute: typeof CropCalendarRoute
   DiagnoseRoute: typeof DiagnoseRoute
   DisasterRoute: typeof DisasterRoute
   MarketRoute: typeof MarketRoute
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/costs'
       fullPath: '/costs'
       preLoaderRoute: typeof CostsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crop-calendar': {
+      id: '/crop-calendar'
+      path: '/crop-calendar'
+      fullPath: '/crop-calendar'
+      preLoaderRoute: typeof CropCalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diagnose': {
@@ -361,6 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalendarRoute: CalendarRoute,
   CommunityRoute: CommunityRoute,
   CostsRoute: CostsRoute,
+  CropCalendarRoute: CropCalendarRoute,
   DiagnoseRoute: DiagnoseRoute,
   DisasterRoute: DisasterRoute,
   MarketRoute: MarketRoute,

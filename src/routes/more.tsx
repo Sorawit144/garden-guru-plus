@@ -14,12 +14,13 @@ export const Route = createFileRoute("/more")({
 });
 
 const menu = [
+  { to: "/crop-calendar", icon: "📅", label: "ปฏิทินพืช AI", desc: "Timeline เพาะปลูก → เก็บเกี่ยว" },
   { to: "/recommend", icon: "🤖", label: "คำแนะนำ AI", desc: "รดน้ำ ใส่ปุ๋ย ฉีดยา เก็บเกี่ยว" },
   { to: "/weather", icon: "🌦️", label: "สภาพอากาศ", desc: "ฝน ความชื้น ลม UV" },
   { to: "/market", icon: "🏷️", label: "ราคาตลาด", desc: "ราคาผลผลิตล่าสุดวันนี้" },
   { to: "/disaster", icon: "🌊", label: "น้ำท่วม-ภัยแล้ง", desc: "เฝ้าระวังและหลักฐานชดเชย" },
   { to: "/monitor", icon: "🩺", label: "เฝ้าระวังรายสัปดาห์", desc: "ความสมบูรณ์ของพืช" },
-  { to: "/calendar", icon: "📅", label: "ปฏิทินงาน", desc: "ตารางงานและแจ้งเตือน" },
+  { to: "/calendar", icon: "🗓️", label: "ปฏิทินงาน", desc: "ตารางงานและแจ้งเตือน" },
   { to: "/costs", icon: "💰", label: "ต้นทุน-รายได้", desc: "รายรับ รายจ่าย กำไร" },
   { to: "/yield", icon: "📈", label: "คาดการณ์ผลผลิต", desc: "ผลผลิตและรายได้ล่วงหน้า" },
   { to: "/notifications", icon: "🔔", label: "การแจ้งเตือน", desc: "งาน โรค ฝน ดินแห้ง" },

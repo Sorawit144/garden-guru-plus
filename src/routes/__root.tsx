@@ -11,7 +11,11 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+<<<<<<< HEAD
 import { Toaster } from "@/components/ui/sonner";
+=======
+import { themeInitScript } from "../components/ThemeToggle";
+>>>>>>> d84bd0680668f60b078f320b974308fb547052d3
 
 function NotFoundComponent() {
   return (
@@ -97,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700&display=swap",
       },
       {
         rel: "stylesheet",
@@ -119,6 +123,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {children}
         <Scripts />
       </body>

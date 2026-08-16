@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, Home, LayoutGrid, Leaf, MessageCircle, ScanLine } from "lucide-react";
 import type { ReactNode } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navItems = [
   { to: "/", label: "หน้าหลัก", icon: Home, exact: true },
@@ -30,14 +31,17 @@ export function AppShell({
                 <p className="mt-1 text-sm text-primary-foreground/80">{subtitle}</p>
               ) : null}
             </div>
-            <Link
-              to="/notifications"
-              className="relative rounded-full bg-white/15 p-2.5 transition-colors hover:bg-white/25"
-              aria-label="การแจ้งเตือน"
-            >
-              <Bell className="size-5" />
-              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-warning" />
-            </Link>
+            <div className="flex shrink-0 items-center gap-2">
+              <ThemeToggle />
+              <Link
+                to="/notifications"
+                className="relative rounded-full bg-white/15 p-2.5 transition-colors hover:bg-white/25"
+                aria-label="การแจ้งเตือน"
+              >
+                <Bell className="size-5" />
+                <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-warning" />
+              </Link>
+            </div>
           </div>
         </header>
 

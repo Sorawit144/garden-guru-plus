@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Anuphan", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Anuphan", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Bai Jamjuree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bai Jamjuree", ui-sans-serif, system-ui, sans-serif;
 }
 
 /*
@@ -93,8 +93,8 @@
   --destructive: oklch(0.58 0.2 27);
   --destructive-foreground: oklch(0.99 0.01 120);
   --warning: oklch(0.78 0.15 75);
-  --border: oklch(0.9 0.01 145);
-  --input: oklch(0.9 0.01 145);
+  --border: oklch(0.87 0.014 145);
+  --input: oklch(0.84 0.018 145);
   --ring: oklch(0.5 0.12 145);
   --shadow-soft: 0 16px 38px -20px oklch(0.35 0.07 145 / 0.3);
   --shadow-card: 0 10px 24px -19px oklch(0.32 0.06 145 / 0.25);
@@ -114,46 +114,46 @@
 }
 
 .dark {
-  --background: oklch(0.18 0.03 145);
+  --background: oklch(0.16 0.025 145);
   --foreground: oklch(0.97 0.01 145);
-  --card: oklch(0.24 0.04 145);
+  --card: oklch(0.265 0.038 145);
   --card-foreground: oklch(0.97 0.01 145);
-  --popover: oklch(0.24 0.04 145);
+  --popover: oklch(0.3 0.04 145);
   --popover-foreground: oklch(0.97 0.01 145);
-  --primary: oklch(0.75 0.12 145);
-  --primary-foreground: oklch(0.18 0.03 145);
-  --primary-soft: oklch(0.28 0.05 145);
-  --primary-50: oklch(0.32 0.04 145);
-  --primary-100: oklch(0.42 0.06 145);
+  --primary: oklch(0.72 0.115 145);
+  --primary-foreground: oklch(0.16 0.025 145);
+  --primary-soft: oklch(0.355 0.065 145);
+  --primary-50: oklch(0.33 0.045 145);
+  --primary-100: oklch(0.44 0.065 145);
   --primary-200: oklch(0.55 0.09 145);
-  --primary-300: oklch(0.65 0.11 145);
-  --primary-400: oklch(0.75 0.12 145);
-  --secondary: oklch(0.28 0.04 145);
+  --primary-300: oklch(0.65 0.105 145);
+  --primary-400: oklch(0.72 0.115 145);
+  --secondary: oklch(0.31 0.035 145);
   --secondary-foreground: oklch(0.97 0.01 145);
-  --muted: oklch(0.28 0.04 145);
-  --muted-foreground: oklch(0.7 0.02 145);
-  --accent: oklch(0.28 0.04 145);
-  --accent-foreground: oklch(0.97 0.01 145);
+  --muted: oklch(0.33 0.03 145);
+  --muted-foreground: oklch(0.77 0.018 145);
+  --accent: oklch(0.36 0.045 145);
+  --accent-foreground: oklch(0.98 0.01 145);
   --destructive: oklch(0.65 0.18 27);
   --destructive-foreground: oklch(0.99 0.01 120);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.75 0.12 145);
-  --chart-1: oklch(0.75 0.12 145);
+  --border: oklch(0.48 0.025 145);
+  --input: oklch(0.51 0.025 145);
+  --ring: oklch(0.72 0.115 145);
+  --chart-1: oklch(0.72 0.115 145);
   --chart-2: oklch(0.65 0.12 145);
   --chart-3: oklch(0.85 0.12 145);
   --chart-4: oklch(0.55 0.12 145);
   --chart-5: oklch(0.7 0.12 145);
-  --sidebar: oklch(0.24 0.04 145);
+  --sidebar: oklch(0.265 0.038 145);
   --sidebar-foreground: oklch(0.97 0.01 145);
-  --sidebar-primary: oklch(0.75 0.12 145);
-  --sidebar-primary-foreground: oklch(0.18 0.03 145);
-  --sidebar-accent: oklch(0.28 0.04 145);
-  --sidebar-accent-foreground: oklch(0.97 0.01 145);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.75 0.12 145);
-  --shadow-soft: 0 8px 24px -12px oklch(0 0 0 / 0.6);
-  --shadow-card: 0 2px 10px -4px oklch(0 0 0 / 0.5);
+  --sidebar-primary: oklch(0.72 0.115 145);
+  --sidebar-primary-foreground: oklch(0.16 0.025 145);
+  --sidebar-accent: oklch(0.36 0.045 145);
+  --sidebar-accent-foreground: oklch(0.98 0.01 145);
+  --sidebar-border: oklch(0.48 0.025 145);
+  --sidebar-ring: oklch(0.72 0.115 145);
+  --shadow-soft: 0 18px 40px -22px oklch(0 0 0 / 0.88);
+  --shadow-card: 0 12px 26px -20px oklch(0 0 0 / 0.85);
 }
 
 @layer base {
@@ -167,6 +167,7 @@
     font-family: var(--font-sans);
     -webkit-tap-highlight-color: transparent;
     text-rendering: optimizeLegibility;
+    line-height: 1.5;
   }
 
   a,
@@ -175,6 +176,7 @@
   select,
   textarea {
     -webkit-tap-highlight-color: transparent;
+    font: inherit;
   }
 }
 
@@ -183,6 +185,10 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-card);
+}
+
+.dark .surface-card {
+  border-color: color-mix(in oklch, var(--color-border), white 24%);
 }
 
 @utility app-frame {

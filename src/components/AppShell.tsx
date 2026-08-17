@@ -55,7 +55,7 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 space-y-5 px-4 pt-5 pb-32">{children}</main>
+        <main className="flex-1 space-y-6 px-4 pt-5 pb-32">{children}</main>
 
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md px-4 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
           <ul className="flex items-stretch justify-between gap-1 rounded-[1.75rem] border border-border/70 bg-card/90 p-2 shadow-[0_16px_34px_-16px_oklch(0.22_0.05_145_/_0.38)] ring-1 ring-black/[0.03] backdrop-blur-2xl">
@@ -85,14 +85,16 @@ export function AppShell({
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`surface-card p-4 ${className}`}>{children}</div>;
+  return <div className={`surface-card p-5 ${className}`}>{children}</div>;
 }
 
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex items-center justify-between px-1 pt-1">
-      <h2 className="text-[15px] font-bold tracking-tight text-foreground">{children}</h2>
-      {action}
+    <div className="flex min-h-7 items-center justify-between gap-3 px-1">
+      <h2 className="border-l-3 border-primary pl-2.5 text-[15px] font-bold tracking-tight text-foreground">
+        {children}
+      </h2>
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }

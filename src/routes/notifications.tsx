@@ -16,6 +16,7 @@ export const Route = createFileRoute("/notifications")({
 
 const icons: Record<string, string> = {
   โรคระบาด: "🦠",
+  แมลง: "🐛",
   ฝน: "🌧️",
   ดินแห้ง: "🌵",
   ใส่ปุ๋ย: "🌿",
@@ -47,7 +48,7 @@ function NotificationsPage() {
 
       <SectionTitle>ตั้งค่าการแจ้งเตือน</SectionTitle>
       <Card className="space-y-3">
-        {["งานที่ต้องทำ", "โรคระบาดในพื้นที่", "ฝนตก/ลมแรง", "ความชื้นดินต่ำ", "รอบใส่ปุ๋ย"].map((s) => (
+        {["งานที่ต้องทำ", "โรคระบาดในพื้นที่", "แมลงระบาดในพื้นที่", "ฝนตก/ลมแรง", "ความชื้นดินต่ำ", "รอบใส่ปุ๋ย"].map((s) => (
           <div key={s} className="flex items-center justify-between">
             <p className="text-sm">{s}</p>
             <span className="flex h-6 w-11 items-center rounded-full bg-primary p-1">

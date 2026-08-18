@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bug, MapPin, ShieldAlert } from "lucide-react";
 import { AppShell, Badge, Card, Progress, SectionTitle } from "@/components/AppShell";
-import { weeklyChecks, weeklyHealth } from "@/lib/farm-data";
+import { areaBiosecurityAlerts, weeklyChecks, weeklyHealth } from "@/lib/farm-data";
 
 export const Route = createFileRoute("/monitor")({
   head: () => ({
@@ -20,6 +21,60 @@ export const Route = createFileRoute("/monitor")({
 function MonitorPage() {
   return (
     <AppShell title="เฝ้าระวังรายสัปดาห์" subtitle="ตรวจครั้งล่าสุด 5 ส.ค. 2569">
+      <SectionTitle
+        action={<span className="text-xs font-medium text-primary">ติดตามพื้นที่ใกล้สวน</span>}
+      >
+        เตือนโรคและแมลงในพื้นที่
+      </SectionTitle>
+      <div className="space-y-3">
+        {areaBiosecurityAlerts.map((alert) => {
+          const isHighRisk = alert.risk >= 70;
+          return (
+            <Card
+              key={alert.id}
+              className={isHighRisk ? "border-destructive/30 bg-destructive/5" : "border-primary/25 bg-primary/5"}
+            >
+              <div className="flex items-start gap-3">
+                <span
+                  className={`flex size-10 shrink-0 items-center justify-center rounded-2xl ${
+                    isHighRisk ? "bg-destructive/15 text-destructive" : "bg-primary-soft text-primary"
+                  }`}
+                >
+                  {alert.type === "โรค" ? <ShieldAlert className="size-5" /> : <Bug className="size-5" />}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-semibold">{alert.title}</p>
+                      <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="size-3" />
+                        {alert.area}
+                      </p>
+                    </div>
+                    <Badge tone={isHighRisk ? "bad" : "warn"}>{alert.risk}%</Badge>
+                  </div>
+                  <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{alert.reason}</p>
+                  <div className="mt-3 rounded-xl bg-card/80 px-3 py-2 text-xs">
+                    <span className="font-semibold text-foreground">แนะนำ: </span>
+                    <span className="text-muted-foreground">{alert.action}</span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                    <span>พืชเสี่ยง: {alert.crops}</span>
+                    <span>{alert.updated}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+      <Link
+        to="/diagnose"
+        className="block w-full rounded-xl border border-primary/30 bg-primary-soft py-2.5 text-center text-sm font-medium text-primary active:scale-[0.99]"
+      >
+        ตรวจอาการพืชในแปลงด้วย AI
+      </Link>
+
       <SectionTitle>แนวโน้ม 5 สัปดาห์</SectionTitle>
       <Card>
         <div className="h-48">

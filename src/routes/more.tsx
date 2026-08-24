@@ -8,6 +8,7 @@ import {
   FileText,
   HandCoins,
   HeartPulse,
+  ShieldCheck,
   Users,
   Waves,
   Wheat,
@@ -15,6 +16,7 @@ import {
 import { AppShell, Card, SectionTitle } from "@/components/AppShell";
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useOrganizationPlan } from "@/hooks/useOrganizationPlan";
 
 export const Route = createFileRoute("/more")({
   head: () => ({
@@ -44,6 +46,20 @@ const menu = [
   { to: "/disaster", icon: Waves, label: "น้ำท่วม-ภัยแล้ง", desc: "เฝ้าระวังและหลักฐานชดเชย" },
   { to: "/monitor", icon: HeartPulse, label: "เฝ้าระวังรายสัปดาห์", desc: "ความสมบูรณ์ของพืช" },
   { to: "/calendar", icon: CalendarDays, label: "ปฏิทินงาน", desc: "ตารางงานและแจ้งเตือน" },
+  {
+    to: "/team",
+    icon: Users,
+    label: "สมาชิกและทีม",
+    desc: "ทีม บทบาท และสิทธิ์ในองค์กร",
+    minimumTier: "pro",
+  },
+  {
+    to: "/operations",
+    icon: ShieldCheck,
+    label: "ศูนย์ปฏิบัติการ 360",
+    desc: "ตัดสินใจและติดตามทุกแปลง",
+    minimumTier: "promax",
+  },
   { to: "/costs", icon: BarChart3, label: "ต้นทุน-รายได้", desc: "รายรับ รายจ่าย กำไร" },
   { to: "/yield", icon: Wheat, label: "คาดการณ์ผลผลิต", desc: "ผลผลิตและรายได้ล่วงหน้า" },
   { to: "/notifications", icon: Bell, label: "การแจ้งเตือน", desc: "งาน โรค ฝน ดินแห้ง" },
@@ -52,11 +68,16 @@ const menu = [
 ] as const;
 
 function MorePage() {
+  const { tier } = useOrganizationPlan();
+  const tierRank = { free: 0, pro: 1, promax: 2 };
+  const visibleMenu = menu.filter(
+    (item) => !item.minimumTier || tierRank[tier] >= tierRank[item.minimumTier],
+  );
   return (
     <AppShell title="เมนูทั้งหมด" subtitle="ทุกเครื่องมือจัดการสวนในที่เดียว">
       <SectionTitle>ฟีเจอร์</SectionTitle>
       <div className="grid grid-cols-2 gap-3">
-        {menu.map((m) => (
+        {visibleMenu.map((m) => (
           <Link key={m.to} to={m.to}>
             <Card className="h-full">
               <span className="flex size-11 items-center justify-center rounded-2xl bg-primary-soft text-primary">
@@ -70,13 +91,16 @@ function MorePage() {
       </div>
 
       <SectionTitle>บัญชีของฉัน</SectionTitle>
-      <Card className="flex items-center gap-3">
-        <BrandMark size="md" />
-        <div>
-          <p className="text-sm font-semibold">สวนคุณสมชาย</p>
-          <p className="text-xs text-muted-foreground">3 แปลง · 25 ไร่ · จ.จันทบุรี</p>
-        </div>
-      </Card>
+      <Link to="/login">
+        <Card className="flex items-center gap-3 transition-colors hover:bg-muted/40">
+          <BrandMark size="md" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold">สวนคุณสมชาย</p>
+            <p className="text-xs text-muted-foreground">3 แปลง · 25 ไร่ · จ.จันทบุรี</p>
+          </div>
+          <span className="text-xs font-semibold text-primary">เข้าสู่ระบบ</span>
+        </Card>
+      </Link>
 
       <SectionTitle>การแสดงผล</SectionTitle>
       <Card className="flex items-center justify-between gap-3">

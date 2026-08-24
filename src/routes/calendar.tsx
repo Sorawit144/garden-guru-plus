@@ -1,42 +1,65 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Trash2, X } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import {
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ClipboardCheck,
+  Droplets,
+  FlaskConical,
+  PackageCheck,
+  PencilRuler,
+  Plus,
+  Send,
+  Sprout,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
+import { useEffect, useMemo, useState, type ComponentType } from "react";
 import { AppShell, Badge, Card, SectionTitle } from "@/components/AppShell";
 import { usePlots } from "@/hooks/usePlots";
+import { useOrganizationPlan } from "@/hooks/useOrganizationPlan";
+import { getTierTeams, PLAN_DETAILS, type PlanTier } from "@/lib/organization-data";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/calendar")({
   head: () => ({
     meta: [
-      { title: "ปฏิทินงานสวน — สวนอัจฉริยะ" },
-      { name: "description", content: "ตารางงานใส่ปุ๋ย รดน้ำ ฉีดยา และเก็บเกี่ยว พร้อมการแจ้งเตือน" },
-      { property: "og:title", content: "ปฏิทินงานสวน — สวนอัจฉริยะ" },
-      { property: "og:description", content: "วางแผนงานเกษตรรายวันและรับแจ้งเตือนอัตโนมัติ" },
+      { title: "แผนงานองค์กร — สวนอัจฉริยะ" },
+      { name: "description", content: "วางแผน มอบหมาย และอนุมัติงานเกษตรเป็นทีม" },
     ],
   }),
   component: CalendarPage,
 });
 
 type TaskType = "รดน้ำ" | "ใส่ปุ๋ย" | "ฉีดยา" | "เก็บเกี่ยว" | "ตัดแต่ง" | "อื่นๆ";
-
+type TaskStatus = "todo" | "submitted" | "approved";
+type Role = "worker" | "lead" | "manager";
 type FarmTask = {
   id: string;
-  date: string; // ISO yyyy-mm-dd
+  date: string;
   title: string;
   type: TaskType;
   plotId: string;
-  done: boolean;
+  team: string;
+  assignee: string;
+  status: TaskStatus;
+  done?: boolean;
 };
 
-const TYPE_EMOJI: Record<TaskType, string> = {
-  รดน้ำ: "💧",
-  ใส่ปุ๋ย: "🌿",
-  ฉีดยา: "🧴",
-  เก็บเกี่ยว: "🧺",
-  ตัดแต่ง: "✂️",
-  อื่นๆ: "📌",
+const ROLES: Record<Role, { label: string; name: string; team: string }> = {
+  worker: { label: "ผู้ปฏิบัติงาน", name: "สมชาย ใจดี", team: "ทีมดูแลแปลง A" },
+  lead: { label: "หัวหน้าทีม", name: "วิภา รุ่งเรือง", team: "ทีมดูแลแปลง A" },
+  manager: { label: "ผู้จัดการฟาร์ม", name: "กิตติ ศรีสุข", team: "ทุกทีม" },
 };
-
+const TYPE_ICON: Record<TaskType, ComponentType<{ className?: string }>> = {
+  รดน้ำ: Droplets,
+  ใส่ปุ๋ย: Sprout,
+  ฉีดยา: FlaskConical,
+  เก็บเกี่ยว: PackageCheck,
+  ตัดแต่ง: PencilRuler,
+  อื่นๆ: ClipboardCheck,
+};
 const TYPE_TONE: Record<TaskType, "good" | "warn" | "info" | "muted"> = {
   รดน้ำ: "info",
   ใส่ปุ๋ย: "good",
@@ -46,279 +69,407 @@ const TYPE_TONE: Record<TaskType, "good" | "warn" | "info" | "muted"> = {
   อื่นๆ: "muted",
 };
 
-function getWeek(): { date: string; dayLabel: string; dayShort: string }[] {
+function getWeek() {
   const days = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
-  const result = [];
-  const today = new Date();
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    result.push({
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return {
       date: d.toISOString().slice(0, 10),
-      dayLabel: d.getDate().toString(),
-      dayShort: days[d.getDay()] ?? "?",
-    });
-  }
-  return result;
+      dayLabel: String(d.getDate()),
+      dayShort: days[d.getDay()] ?? "",
+    };
+  });
 }
+const statusLabel: Record<TaskStatus, string> = {
+  todo: "รอดำเนินการ",
+  submitted: "รออนุมัติ",
+  approved: "อนุมัติแล้ว",
+};
 
 function CalendarPage() {
   const { plots } = usePlots();
   const [tasks, setTasks] = useState<FarmTask[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+  const [role, setRole] = useState<Role>("worker");
+  const { tier, changeTier } = useOrganizationPlan();
+  const [showRolePicker, setShowRolePicker] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
-
-  // form state
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState<TaskType>("รดน้ำ");
   const [newPlotId, setNewPlotId] = useState("");
   const [newDate, setNewDate] = useState(selectedDate);
+  const [newTeam, setNewTeam] = useState("ทีมดูแลแปลง A");
+  const [newAssignee, setNewAssignee] = useState("สมชาย ใจดี");
+  const week = useMemo(getWeek, []);
+  const profile = ROLES[role];
+  const planTeams = getTierTeams(tier);
 
-  const week = useMemo(() => getWeek(), []);
-
-  // load from localStorage
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("garden_guru_calendar_tasks");
-      if (stored) {
-        try { setTasks(JSON.parse(stored)); } catch (e) {}
+    const stored = localStorage.getItem("garden_guru_calendar_tasks");
+    if (stored) {
+      try {
+        const savedTasks = JSON.parse(stored) as FarmTask[];
+        setTasks(
+          savedTasks.map((task) => ({
+            ...task,
+            team: task.team ?? "ทีมดูแลแปลง A",
+            assignee: task.assignee ?? "สมชาย ใจดี",
+            status: task.status ?? (task.done ? "approved" : "todo"),
+          })),
+        );
+      } catch {
+        /* ignore invalid cached data */
       }
+    } else {
+      const today = new Date().toISOString().slice(0, 10);
+      setTasks([
+        {
+          id: "mock-task-1",
+          date: today,
+          title: "ตรวจระบบน้ำและรดน้ำโซนทุเรียน",
+          type: "รดน้ำ",
+          plotId: "",
+          team: "ทีมดูแลแปลง A",
+          assignee: "สมชาย ใจดี",
+          status: "todo",
+        },
+        {
+          id: "mock-task-2",
+          date: today,
+          title: "ตรวจความพร้อมก่อนเก็บเกี่ยว",
+          type: "เก็บเกี่ยว",
+          plotId: "",
+          team: "ทีมเก็บเกี่ยว",
+          assignee: "กิตติ ศรีสุข",
+          status: "submitted",
+        },
+        {
+          id: "mock-task-3",
+          date: today,
+          title: "ใส่ปุ๋ยทางใบแปลงมังคุด",
+          type: "ใส่ปุ๋ย",
+          plotId: "",
+          team: "ทีมดูแลแปลง B",
+          assignee: "ปรียา แสงทอง",
+          status: "approved",
+        },
+      ]);
     }
-    if (plots.length > 0 && plots[0] && !newPlotId) {
-      setNewPlotId(plots[0].id);
-    }
+    if (plots[0]) setNewPlotId((current) => current || plots[0]!.id);
   }, [plots]);
-
   const saveTasks = (updated: FarmTask[]) => {
     setTasks(updated);
     localStorage.setItem("garden_guru_calendar_tasks", JSON.stringify(updated));
   };
-
+  const updateTask = (id: string, update: Partial<FarmTask>) =>
+    saveTasks(tasks.map((task) => (task.id === id ? { ...task, ...update } : task)));
   const addTask = () => {
-    if (!newTitle.trim()) {
-      toast.error("กรุณาระบุชื่องาน");
-      return;
-    }
-    const task: FarmTask = {
-      id: `task-${Date.now()}`,
-      date: newDate,
-      title: newTitle.trim(),
-      type: newType,
-      plotId: newPlotId,
-      done: false,
-    };
-    saveTasks([task, ...tasks]);
+    if (!newTitle.trim()) return toast.error("กรุณาระบุชื่องาน");
+    saveTasks([
+      {
+        id: `task-${Date.now()}`,
+        date: newDate,
+        title: newTitle.trim(),
+        type: newType,
+        plotId: newPlotId,
+        team: newTeam,
+        assignee: newAssignee,
+        status: "todo",
+      },
+      ...tasks,
+    ]);
     setNewTitle("");
     setShowAdd(false);
-    toast.success("เพิ่มงานสำเร็จ!");
+    toast.success("มอบหมายงานให้ทีมแล้ว");
   };
-
-  const toggleDone = (id: string) => {
-    saveTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
-  };
-
-  const deleteTask = (id: string) => {
-    saveTasks(tasks.filter((t) => t.id !== id));
-    toast.success("ลบงานแล้ว");
-  };
-
-  const tasksForDate = tasks.filter((t) => t.date === selectedDate);
+  const visibleTasks = tasks.filter(
+    (task) =>
+      planTeams.some((team) => team.name === task.team) &&
+      (role === "manager" ||
+        task.team === profile.team ||
+        (role === "worker" && task.assignee === profile.name)),
+  );
+  const tasksForDate = visibleTasks.filter((task) => task.date === selectedDate);
+  const openCount = visibleTasks.filter((task) => task.status === "todo").length;
+  const pendingApproval = visibleTasks.filter((task) => task.status === "submitted").length;
 
   return (
-    <AppShell title="ปฏิทินงาน" subtitle="วางแผนงานเกษตรรายวัน">
-      {/* 7-day week strip */}
+    <AppShell title="แผนงานองค์กร" subtitle="มอบหมาย ติดตาม และอนุมัติงานเป็นทีม">
+      <Card className="relative overflow-visible p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
+              <Users className="size-5" />
+            </span>
+            <div>
+              <p className="text-xs text-muted-foreground">กำลังจำลองเป็น</p>
+              <p className="text-sm font-semibold">
+                {profile.name} · {profile.label}
+              </p>
+              <p className="text-xs text-muted-foreground">{profile.team}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowRolePicker(!showRolePicker)}
+            className="flex items-center gap-1 rounded-xl border border-border px-3 py-2 text-xs font-medium text-primary"
+          >
+            <span>เปลี่ยนมุมมอง</span>
+            <ChevronDown className="size-4" />
+          </button>
+        </div>
+        {showRolePicker && (
+          <div className="absolute inset-x-4 top-[4.6rem] z-10 rounded-xl border border-border bg-card p-2 shadow-lg">
+            {(Object.keys(ROLES) as Role[]).map((key) => (
+              <button
+                key={key}
+                onClick={() => {
+                  setRole(key);
+                  setShowRolePicker(false);
+                }}
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm ${role === key ? "bg-primary-soft text-primary" : "hover:bg-muted"}`}
+              >
+                <span>{ROLES[key].label}</span>
+                <span className="text-xs text-muted-foreground">{ROLES[key].team}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </Card>
+      <Card className="p-4">
+        <p className="mb-2 text-xs font-medium text-muted-foreground">จำลองแพ็กเกจองค์กร</p>
+        <div className="grid grid-cols-3 gap-1 rounded-xl bg-muted p-1">
+          {(["free", "pro", "promax"] as PlanTier[]).map((item) => (
+            <button
+              key={item}
+              onClick={() => changeTier(item)}
+              className={`rounded-lg px-2 py-2 text-xs font-semibold ${tier === item ? "bg-card text-primary shadow-sm" : "text-muted-foreground"}`}
+            >
+              {PLAN_DETAILS[item].name}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">{PLAN_DETAILS[tier].description}</p>
+      </Card>
+      <div className="grid grid-cols-3 gap-2">
+        <Card className="p-3">
+          <p className="text-xs text-muted-foreground">งานของทีม</p>
+          <p className="mt-1 text-xl font-bold">{visibleTasks.length}</p>
+        </Card>
+        <Card className="p-3">
+          <p className="text-xs text-muted-foreground">กำลังทำ</p>
+          <p className="mt-1 text-xl font-bold text-primary">{openCount}</p>
+        </Card>
+        <Card className="p-3">
+          <p className="text-xs text-muted-foreground">รออนุมัติ</p>
+          <p className="mt-1 text-xl font-bold text-warning">{pendingApproval}</p>
+        </Card>
+      </div>
       <Card>
         <div className="grid grid-cols-7 gap-1 text-center">
           {week.map((d) => {
-            const dayTasks = tasks.filter((t) => t.date === d.date);
             const isSelected = d.date === selectedDate;
+            const count = visibleTasks.filter((task) => task.date === d.date).length;
             return (
               <button
                 key={d.date}
                 onClick={() => setSelectedDate(d.date)}
-                className={`rounded-xl py-2 transition-all cursor-pointer ${
-                  isSelected ? "bg-primary text-primary-foreground" : "bg-muted/50 hover:bg-muted"
-                }`}
+                className={`rounded-xl py-2 ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted/50 hover:bg-muted"}`}
               >
                 <p className="text-[10px] opacity-80">{d.dayShort}</p>
                 <p className="text-sm font-semibold">{d.dayLabel}</p>
-                <div className="mt-1 flex justify-center gap-0.5 flex-wrap">
-                  {dayTasks.slice(0, 3).map((t, k) => (
-                    <span
-                      key={k}
-                      className={`size-1.5 rounded-full ${isSelected ? "bg-white/80" : "bg-primary/60"}`}
-                    />
-                  ))}
-                </div>
+                {count > 0 && (
+                  <span
+                    className={`mx-auto mt-1 block size-1.5 rounded-full ${isSelected ? "bg-white" : "bg-primary"}`}
+                  />
+                )}
               </button>
             );
           })}
         </div>
       </Card>
-
-      {/* Add task button */}
-      <button
-        onClick={() => { setNewDate(selectedDate); setShowAdd(true); }}
-        className="bg-primary flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold text-primary-foreground cursor-pointer active:scale-[0.98]"
-      >
-        <Plus className="size-4" /> เพิ่มงานใหม่
-      </button>
-
-      {/* Add task modal overlay */}
-      {showAdd && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={() => setShowAdd(false)}>
-          <div
-            className="w-full max-w-md rounded-t-3xl bg-card p-5 pb-8 shadow-2xl space-y-3"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between">
-              <p className="font-semibold">เพิ่มงานใหม่</p>
-              <button onClick={() => setShowAdd(false)} className="text-muted-foreground cursor-pointer">
-                <X className="size-5" />
-              </button>
-            </div>
-
-            <input
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="ชื่องาน เช่น ใส่ปุ๋ยทางใบแปลงทุเรียน"
-              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-            />
-
-            <div>
-              <p className="mb-1.5 text-xs font-medium text-muted-foreground">ประเภทงาน</p>
-              <div className="flex flex-wrap gap-2">
-                {(Object.keys(TYPE_EMOJI) as TaskType[]).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setNewType(t)}
-                    className={`rounded-full border px-3 py-1.5 text-xs font-medium cursor-pointer transition-all ${
-                      newType === t ? "border-primary bg-primary-soft text-primary" : "border-border"
-                    }`}
-                  >
-                    {TYPE_EMOJI[t]} {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {plots.length > 0 && (
-              <div>
-                <p className="mb-1.5 text-xs font-medium text-muted-foreground">แปลงที่ทำงาน</p>
-                <select
-                  value={newPlotId}
-                  onChange={(e) => setNewPlotId(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary"
-                >
-                  <option value="">-- ไม่ระบุแปลง --</option>
-                  {plots.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.emoji} {p.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <div>
-              <p className="mb-1.5 text-xs font-medium text-muted-foreground">วันที่</p>
-              <input
-                type="date"
-                value={newDate}
-                onChange={(e) => setNewDate(e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary"
-              />
-            </div>
-
-            <button
-              onClick={addTask}
-              className="w-full rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground cursor-pointer active:scale-[0.99]"
-            >
-              บันทึกงาน
-            </button>
-          </div>
-        </div>
+      {(role === "lead" || role === "manager") && tier !== "free" && (
+        <button
+          onClick={() => {
+            setNewDate(selectedDate);
+            setShowAdd(true);
+          }}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-semibold text-primary-foreground"
+        >
+          <Plus className="size-4" /> มอบหมายงานให้ทีม
+        </button>
       )}
-
-      {/* Tasks for selected date */}
       <SectionTitle>
-        งานวันที่ {new Date(selectedDate + "T00:00:00").toLocaleDateString("th-TH", {
-          weekday: "long", day: "numeric", month: "long",
+        งานวันที่{" "}
+        {new Date(selectedDate + "T00:00:00").toLocaleDateString("th-TH", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
         })}
       </SectionTitle>
-
       {tasksForDate.length === 0 ? (
-        <Card className="text-center py-6">
-          <p className="text-2xl mb-2">📅</p>
-          <p className="text-sm text-muted-foreground">ยังไม่มีงานในวันนี้</p>
-          <p className="text-xs text-muted-foreground mt-1">กดปุ่ม "เพิ่มงานใหม่" เพื่อวางแผนได้เลย</p>
+        <Card className="py-7 text-center">
+          <ClipboardCheck className="mx-auto mb-2 size-8 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">ยังไม่มีงานที่เกี่ยวข้องในวันนี้</p>
         </Card>
       ) : (
         <div className="space-y-2">
-          {tasksForDate.map((t) => {
-            const plot = plots.find((p) => p.id === t.plotId);
+          {tasksForDate.map((task) => {
+            const Icon = TYPE_ICON[task.type];
+            const plot = plots.find((p) => p.id === task.plotId);
             return (
-              <Card key={t.id} className={`flex items-center gap-3 ${t.done ? "opacity-60" : ""}`}>
-                <button
-                  onClick={() => toggleDone(t.id)}
-                  className={`flex size-10 shrink-0 items-center justify-center rounded-xl transition-all cursor-pointer ${
-                    t.done ? "bg-primary/20 text-primary" : "bg-muted text-lg"
-                  }`}
-                >
-                  {t.done ? "✓" : TYPE_EMOJI[t.type]}
-                </button>
-                <div className="min-w-0 flex-1">
-                  <p className={`text-sm font-medium ${t.done ? "line-through text-muted-foreground" : ""}`}>
-                    {t.title}
-                  </p>
-                  {plot && <p className="text-xs text-muted-foreground">{plot.emoji} {plot.name}</p>}
+              <Card key={task.id} className="p-4">
+                <div className="flex gap-3">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                    <Icon className="size-5" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-semibold">{task.title}</p>
+                      <Badge
+                        tone={
+                          task.status === "approved"
+                            ? "good"
+                            : task.status === "submitted"
+                              ? "warn"
+                              : "muted"
+                        }
+                      >
+                        {statusLabel[task.status]}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {task.team} · ผู้รับผิดชอบ {task.assignee}
+                      {plot ? ` · ${plot.name}` : ""}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Badge tone={TYPE_TONE[t.type]}>{t.type}</Badge>
-                  <button onClick={() => deleteTask(t.id)} className="text-muted-foreground hover:text-destructive cursor-pointer">
-                    <Trash2 className="size-4" />
-                  </button>
+                <div className="mt-3 flex justify-between gap-2 border-t border-border pt-3">
+                  <Badge tone={TYPE_TONE[task.type]}>{task.type}</Badge>
+                  <div className="flex gap-2">
+                    {role === "worker" &&
+                      task.assignee === profile.name &&
+                      task.status === "todo" && (
+                        <button
+                          onClick={() => {
+                            updateTask(task.id, { status: "submitted" });
+                            toast.success("ส่งงานให้หัวหน้าทีมตรวจแล้ว");
+                          }}
+                          className="flex items-center gap-1 rounded-lg bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
+                        >
+                          <Send className="size-3.5" /> ส่งงาน
+                        </button>
+                      )}
+                    {role === "lead" && tier === "promax" && task.status === "submitted" && (
+                      <button
+                        onClick={() => {
+                          updateTask(task.id, { status: "approved" });
+                          toast.success("อนุมัติงานเรียบร้อย");
+                        }}
+                        className="flex items-center gap-1 rounded-lg bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
+                      >
+                        <CheckCircle2 className="size-3.5" /> อนุมัติ
+                      </button>
+                    )}
+                    {(role === "lead" || role === "manager") && (
+                      <button
+                        aria-label="ลบงาน"
+                        onClick={() => {
+                          saveTasks(tasks.filter((item) => item.id !== task.id));
+                          toast.success("ลบงานแล้ว");
+                        }}
+                        className="rounded-lg p-1.5 text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </Card>
             );
           })}
-          <p className="text-center text-xs text-muted-foreground pt-1">
-            เสร็จแล้ว {tasksForDate.filter((t) => t.done).length}/{tasksForDate.length} งาน
-          </p>
         </div>
       )}
-
-      {/* Upcoming tasks from other days */}
-      {tasks.filter((t) => t.date > selectedDate && !t.done).length > 0 && (
-        <>
-          <SectionTitle>งานที่กำลังจะมาถึง</SectionTitle>
-          <div className="space-y-2">
-            {tasks
-              .filter((t) => t.date > selectedDate && !t.done)
-              .sort((a, b) => a.date.localeCompare(b.date))
-              .slice(0, 5)
-              .map((t) => {
-                const plot = plots.find((p) => p.id === t.plotId);
-                const dateLabel = new Date(t.date + "T00:00:00").toLocaleDateString("th-TH", {
-                  day: "numeric", month: "short",
-                });
+      {showAdd && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
+          onClick={() => setShowAdd(false)}
+        >
+          <div
+            className="w-full max-w-md space-y-3 rounded-t-3xl bg-card p-5 pb-8 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex justify-between">
+              <p className="font-semibold">มอบหมายงานใหม่</p>
+              <button onClick={() => setShowAdd(false)}>
+                <X className="size-5" />
+              </button>
+            </div>
+            <input
+              value={newTitle}
+              onChange={(event) => setNewTitle(event.target.value)}
+              placeholder="ชื่องาน"
+              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary"
+            />
+            <div className="flex flex-wrap gap-2">
+              {(Object.keys(TYPE_ICON) as TaskType[]).map((type) => {
+                const Icon = TYPE_ICON[type];
                 return (
-                  <Card key={t.id} className="flex items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-lg">
-                      {TYPE_EMOJI[t.type]}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{t.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {dateLabel}{plot ? ` · ${plot.name}` : ""}
-                      </p>
-                    </div>
-                    <Badge tone={TYPE_TONE[t.type]}>{t.type}</Badge>
-                  </Card>
+                  <button
+                    key={type}
+                    onClick={() => setNewType(type)}
+                    className={`flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs ${newType === type ? "border-primary bg-primary-soft text-primary" : "border-border"}`}
+                  >
+                    <Icon className="size-3.5" />
+                    {type}
+                  </button>
                 );
               })}
+            </div>
+            <select
+              value={newTeam}
+              onChange={(event) => setNewTeam(event.target.value)}
+              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm"
+            >
+              <option value="">เลือกทีม</option>
+              {planTeams.map((team) => (
+                <option key={team.id}>{team.name}</option>
+              ))}
+            </select>
+            <input
+              value={newAssignee}
+              onChange={(event) => setNewAssignee(event.target.value)}
+              placeholder="ชื่อผู้รับผิดชอบ"
+              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm"
+            />
+            {plots.length > 0 && (
+              <select
+                value={newPlotId}
+                onChange={(event) => setNewPlotId(event.target.value)}
+                className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm"
+              >
+                <option value="">ไม่ระบุแปลง</option>
+                {plots.map((plot) => (
+                  <option key={plot.id} value={plot.id}>
+                    {plot.name}
+                  </option>
+                ))}
+              </select>
+            )}
+            <input
+              type="date"
+              value={newDate}
+              onChange={(event) => setNewDate(event.target.value)}
+              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm"
+            />
+            <button
+              onClick={addTask}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground"
+            >
+              <Check className="size-4" /> บันทึกและมอบหมาย
+            </button>
           </div>
-        </>
+        </div>
       )}
     </AppShell>
   );

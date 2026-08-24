@@ -5,9 +5,11 @@ import {
   ChevronRight,
   CloudSun,
   Droplets,
+  GraduationCap,
   Sparkles,
   Sprout,
   Tags,
+  X,
 } from "lucide-react";
 import { AppShell, Badge, Card, Progress, SectionTitle, baht } from "@/components/AppShell";
 import { BrandMark } from "@/components/BrandMark";
@@ -39,6 +41,7 @@ function Dashboard() {
   const area = plots.reduce((s, p) => s + p.area, 0);
 
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [showTrainingShortcut, setShowTrainingShortcut] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -55,11 +58,41 @@ function Dashboard() {
     return () => window.removeEventListener("transactions_updated", loadTx);
   }, []);
 
+  useEffect(() => {
+    if (localStorage.getItem("garden_guru_training_shortcut_closed") === "true")
+      setShowTrainingShortcut(false);
+  }, []);
+
+  const closeTrainingShortcut = () => {
+    setShowTrainingShortcut(false);
+    localStorage.setItem("garden_guru_training_shortcut_closed", "true");
+  };
+
   const income = transactions.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
   const cost = transactions.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
   return (
     <AppShell title="สวัสดี ชาวสวน" subtitle="ศุกร์ที่ 7 สิงหาคม 2569">
+      {showTrainingShortcut && (
+        <div className="fixed right-3 bottom-28 z-40 flex items-center overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-[var(--shadow-card)]">
+          <Link
+            to="/training"
+            className="flex items-center gap-2 px-3 py-2.5 text-sm font-semibold text-primary"
+          >
+            <span className="flex size-8 items-center justify-center rounded-xl bg-primary-soft">
+              <GraduationCap className="size-4" />
+            </span>
+            <span>โหมดฝึกสอน</span>
+          </Link>
+          <button
+            onClick={closeTrainingShortcut}
+            className="self-stretch border-l border-border px-2 text-muted-foreground hover:bg-muted"
+            aria-label="ปิดปุ่มโหมดฝึกสอนถาวร"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
       <Card className="relative overflow-hidden border-0 bg-primary px-5 py-5 text-primary-foreground shadow-[0_18px_30px_-20px_oklch(0.25_0.08_145_/_0.85)]">
         <div className="pointer-events-none absolute -right-8 -top-12 size-44 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex items-start justify-between gap-3">

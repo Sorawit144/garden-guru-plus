@@ -22,11 +22,9 @@ import { Route as MarketRouteImport } from './routes/market'
 import { Route as MonitorRouteImport } from './routes/monitor'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as PlotsRouteImport } from './routes/plots'
 import { Route as RecommendRouteImport } from './routes/recommend'
 import { Route as ReportsRouteImport } from './routes/reports'
-import { Route as TeamRouteImport } from './routes/team'
 import { Route as TrainingRouteImport } from './routes/training'
 import { Route as WeatherRouteImport } from './routes/weather'
 import { Route as YieldRouteImport } from './routes/yield'
@@ -96,11 +94,6 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OperationsRoute = OperationsRouteImport.update({
-  id: '/operations',
-  path: '/operations',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlotsRoute = PlotsRouteImport.update({
   id: '/plots',
   path: '/plots',
@@ -114,11 +107,6 @@ const RecommendRoute = RecommendRouteImport.update({
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TeamRoute = TeamRouteImport.update({
-  id: '/team',
-  path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrainingRoute = TrainingRouteImport.update({
@@ -151,11 +139,9 @@ export interface FileRoutesByFullPath {
   '/monitor': typeof MonitorRoute
   '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
-  '/operations': typeof OperationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
   '/reports': typeof ReportsRoute
-  '/team': typeof TeamRoute
   '/training': typeof TrainingRoute
   '/weather': typeof WeatherRoute
   '/yield': typeof YieldRoute
@@ -174,11 +160,9 @@ export interface FileRoutesByTo {
   '/monitor': typeof MonitorRoute
   '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
-  '/operations': typeof OperationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
   '/reports': typeof ReportsRoute
-  '/team': typeof TeamRoute
   '/training': typeof TrainingRoute
   '/weather': typeof WeatherRoute
   '/yield': typeof YieldRoute
@@ -198,11 +182,9 @@ export interface FileRoutesById {
   '/monitor': typeof MonitorRoute
   '/more': typeof MoreRoute
   '/notifications': typeof NotificationsRoute
-  '/operations': typeof OperationsRoute
   '/plots': typeof PlotsRoute
   '/recommend': typeof RecommendRoute
   '/reports': typeof ReportsRoute
-  '/team': typeof TeamRoute
   '/training': typeof TrainingRoute
   '/weather': typeof WeatherRoute
   '/yield': typeof YieldRoute
@@ -223,11 +205,9 @@ export interface FileRouteTypes {
     | '/monitor'
     | '/more'
     | '/notifications'
-    | '/operations'
     | '/plots'
     | '/recommend'
     | '/reports'
-    | '/team'
     | '/training'
     | '/weather'
     | '/yield'
@@ -246,11 +226,9 @@ export interface FileRouteTypes {
     | '/monitor'
     | '/more'
     | '/notifications'
-    | '/operations'
     | '/plots'
     | '/recommend'
     | '/reports'
-    | '/team'
     | '/training'
     | '/weather'
     | '/yield'
@@ -269,11 +247,9 @@ export interface FileRouteTypes {
     | '/monitor'
     | '/more'
     | '/notifications'
-    | '/operations'
     | '/plots'
     | '/recommend'
     | '/reports'
-    | '/team'
     | '/training'
     | '/weather'
     | '/yield'
@@ -293,11 +269,9 @@ export interface RootRouteChildren {
   MonitorRoute: typeof MonitorRoute
   MoreRoute: typeof MoreRoute
   NotificationsRoute: typeof NotificationsRoute
-  OperationsRoute: typeof OperationsRoute
   PlotsRoute: typeof PlotsRoute
   RecommendRoute: typeof RecommendRoute
   ReportsRoute: typeof ReportsRoute
-  TeamRoute: typeof TeamRoute
   TrainingRoute: typeof TrainingRoute
   WeatherRoute: typeof WeatherRoute
   YieldRoute: typeof YieldRoute
@@ -396,13 +370,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/operations': {
-      id: '/operations'
-      path: '/operations'
-      fullPath: '/operations'
-      preLoaderRoute: typeof OperationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/plots': {
       id: '/plots'
       path: '/plots'
@@ -422,13 +389,6 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof ReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team': {
-      id: '/team'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/training': {
@@ -469,11 +429,9 @@ const rootRouteChildren: RootRouteChildren = {
   MonitorRoute: MonitorRoute,
   MoreRoute: MoreRoute,
   NotificationsRoute: NotificationsRoute,
-  OperationsRoute: OperationsRoute,
   PlotsRoute: PlotsRoute,
   RecommendRoute: RecommendRoute,
   ReportsRoute: ReportsRoute,
-  TeamRoute: TeamRoute,
   TrainingRoute: TrainingRoute,
   WeatherRoute: WeatherRoute,
   YieldRoute: YieldRoute,

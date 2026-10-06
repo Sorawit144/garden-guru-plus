@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  Box,
+  Maximize2,
   MapPin,
   Plus,
   Trash2,
@@ -12,6 +14,7 @@ import {
   BadgeInfo,
   Layers,
   Sparkles,
+  TreePine,
 } from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { AppShell, Badge, Card, Progress } from "@/components/AppShell";
@@ -29,7 +32,10 @@ export const Route = createFileRoute("/plots")({
   head: () => ({
     meta: [
       { title: "จัดการแปลง — สวนอัจฉริยะ" },
-      { name: "description", content: "เพิ่มแปลงจาก GPS ดูชนิดพืช อายุ จำนวนต้น พื้นที่ และประวัติการดูแล" },
+      {
+        name: "description",
+        content: "เพิ่มแปลงจาก GPS ดูชนิดพืช อายุ จำนวนต้น พื้นที่ และประวัติการดูแล",
+      },
       { property: "og:title", content: "จัดการแปลง — สวนอัจฉริยะ" },
       { property: "og:description", content: "จัดการข้อมูลแปลงเพาะปลูกและประวัติการดูแลทั้งหมด" },
     ],
@@ -66,8 +72,8 @@ function calculatePolygonArea(coords: { lat: number; lng: number }[]): number {
 
   // แปลง Latitude/Longitude เป็นพิกัด X, Y ในหน่วยเมตร (Equirectangular Projection)
   const projected = coords.map((c) => {
-    const x = R * ((c.lng - lon0) * Math.PI / 180) * Math.cos(lat0Rad);
-    const y = R * ((c.lat - lat0) * Math.PI / 180);
+    const x = R * (((c.lng - lon0) * Math.PI) / 180) * Math.cos(lat0Rad);
+    const y = R * (((c.lat - lat0) * Math.PI) / 180);
     return { x, y };
   });
 
@@ -102,7 +108,9 @@ function PolygonPreview({ coords }: { coords: Coord[] }) {
       <div className="flex h-[150px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-muted-foreground/30 bg-muted/30 text-xs text-muted-foreground p-4 text-center">
         <Compass className="size-8 mb-2 text-muted-foreground/50 animate-bounce" />
         <span>ยังไม่มีการปักหมุดพิกัดมุมแปลง</span>
-        <span className="text-[10px] text-muted-foreground/75 mt-1">กดปุ่ม "ปักหมุดตำแหน่งปัจจุบัน" เพื่อเริ่มวาด</span>
+        <span className="text-[10px] text-muted-foreground/75 mt-1">
+          กดปุ่ม "ปักหมุดตำแหน่งปัจจุบัน" เพื่อเริ่มวาด
+        </span>
       </div>
     );
   }
@@ -114,8 +122,8 @@ function PolygonPreview({ coords }: { coords: Coord[] }) {
 
   // โพรเจกต์จุดทั้งหมด
   const projected = coords.map((c) => {
-    const x = R * ((c.lng - lon0) * Math.PI / 180) * Math.cos(lat0Rad);
-    const y = R * ((c.lat - lat0) * Math.PI / 180);
+    const x = R * (((c.lng - lon0) * Math.PI) / 180) * Math.cos(lat0Rad);
+    const y = R * (((c.lat - lat0) * Math.PI) / 180);
     return { x, y };
   });
 
@@ -146,7 +154,7 @@ function PolygonPreview({ coords }: { coords: Coord[] }) {
     <div className="relative overflow-hidden rounded-2xl border border-border bg-muted/40 p-2">
       <div className="absolute top-2 left-2 z-10 flex gap-1 items-center bg-background/90 backdrop-blur px-1.5 py-0.5 rounded border border-border text-[9px] font-semibold text-muted-foreground">
         <Layers className="size-2.5 text-primary" />
-        แผนที่ขอบเขตแปลง (Scale: 1:{(1/scale).toFixed(0)})
+        แผนที่ขอบเขตแปลง (Scale: 1:{(1 / scale).toFixed(0)})
       </div>
       <svg width="100%" height={height} className="overflow-visible bg-grid">
         {/* วาดรูปแปลงปิด */}
@@ -191,7 +199,9 @@ function PolygonPreview({ coords }: { coords: Coord[] }) {
         ))}
       </svg>
       <div className="mt-1 flex justify-between text-[9px] text-muted-foreground px-1">
-        <span>ขนาดกว้าง-ยาว: {Math.round(dx)} ม. × {Math.round(dy)} ม.</span>
+        <span>
+          ขนาดกว้าง-ยาว: {Math.round(dx)} ม. × {Math.round(dy)} ม.
+        </span>
         <span>จุดปักหมุดทั้งหมด: {coords.length} จุด</span>
       </div>
     </div>
@@ -281,16 +291,13 @@ function SatelliteMapDrawer({ points, setPoints, centerPoint }: SatelliteMapDraw
       {
         attribution: "Tiles &copy; Esri",
         maxZoom: 19,
-      }
+      },
     ).addTo(map);
 
     // เมื่อผู้ใช้แตะแผนที่
     map.on("click", (e: any) => {
       const { lat, lng } = e.latlng;
-      setPoints((prev) => [
-        ...prev,
-        { lat, lng, acc: 1, timestamp: Date.now() },
-      ]);
+      setPoints((prev) => [...prev, { lat, lng, acc: 1, timestamp: Date.now() }]);
     });
 
     return () => {
@@ -398,7 +405,7 @@ function SatelliteMapDrawer({ points, setPoints, centerPoint }: SatelliteMapDraw
       ) : (
         <div className="relative">
           <div id="satellite-map" className="h-[280px] w-full" />
-          
+
           {/* Overlay Map Controls */}
           <div className="absolute bottom-4 right-4 z-[400] flex flex-col gap-2">
             <button
@@ -429,9 +436,117 @@ function SatelliteMapDrawer({ points, setPoints, centerPoint }: SatelliteMapDraw
   );
 }
 
+function normalizeBoundary(points: { lat: number; lng: number }[]) {
+  const source =
+    points.length >= 3
+      ? points
+      : [
+          { lat: 1, lng: 0 },
+          { lat: 1, lng: 1 },
+          { lat: 0, lng: 0.9 },
+          { lat: 0, lng: 0.1 },
+        ];
+  const lats = source.map((point) => point.lat);
+  const lngs = source.map((point) => point.lng);
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs);
+  const maxLng = Math.max(...lngs);
+  const latRange = maxLat - minLat || 1;
+  const lngRange = maxLng - minLng || 1;
+  return source.map((point) => ({
+    x: 10 + ((point.lng - minLng) / lngRange) * 80,
+    y: 10 + ((maxLat - point.lat) / latRange) * 80,
+  }));
+}
+
+function Garden3DView({
+  points,
+  name,
+  area,
+  compact = false,
+}: {
+  points: { lat: number; lng: number }[];
+  name: string;
+  area: number;
+  compact?: boolean;
+}) {
+  const shape = normalizeBoundary(points);
+  const polygon = shape.map((point) => `${point.x},${point.y}`).join(" ");
+  const clipPath = `polygon(${shape.map((point) => `${point.x}% ${point.y}%`).join(",")})`;
+  const trees = Array.from({ length: compact ? 12 : 22 }, (_, index) => ({
+    left: 16 + ((index * 29) % 68),
+    top: 17 + ((index * 37) % 62),
+    scale: 0.72 + (index % 4) * 0.09,
+  }));
+
+  return (
+    <div
+      className={`relative isolate overflow-hidden bg-[#173e2d] ${compact ? "h-44 rounded-2xl" : "h-[330px] rounded-[1.75rem]"}`}
+      style={{ perspective: "800px" }}
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_12%,rgba(255,232,151,.38),transparent_28%),linear-gradient(155deg,#537a50_0%,#214936_48%,#102e25_100%)]" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:22px_22px]" />
+      <div
+        className={`absolute left-1/2 top-[47%] ${compact ? "h-40 w-64" : "h-56 w-[330px]"}`}
+        style={{
+          transform: "translate(-50%, -50%) rotateX(57deg) rotateZ(-7deg)",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        <div
+          className="absolute inset-0 bg-[radial-gradient(circle,#346b38_0_13%,transparent_15%),linear-gradient(135deg,#5e7d41,#294e2d)] bg-[size:24px_24px] shadow-[0_35px_55px_rgba(0,0,0,.55)]"
+          style={{ clipPath }}
+        />
+        <svg
+          viewBox="0 0 100 100"
+          className="absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_0_7px_rgba(165,255,153,.9)]"
+        >
+          <polygon
+            points={polygon}
+            fill="rgba(78,155,69,.18)"
+            stroke="#b9ff9f"
+            strokeWidth="1.8"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+        {trees.map((tree, index) => (
+          <span
+            key={index}
+            className="absolute flex size-5 items-center justify-center rounded-full bg-[#173f24] text-[#b9e87c] shadow-[0_6px_7px_rgba(0,0,0,.45)]"
+            style={{
+              left: `${tree.left}%`,
+              top: `${tree.top}%`,
+              transform: `translateZ(${10 + (index % 3) * 5}px) scale(${tree.scale})`,
+            }}
+          >
+            <TreePine className="size-3.5" strokeWidth={2.5} />
+          </span>
+        ))}
+      </div>
+      <div className="absolute left-3 top-3 rounded-xl border border-white/20 bg-black/48 px-3 py-2 text-white backdrop-blur-md">
+        <p className="text-xs font-bold">{name}</p>
+        <p className="text-[10px] text-white/75">
+          ขอบเขตจาก {points.length || 4} จุด · {area.toFixed(1)} ไร่
+        </p>
+      </div>
+      {!compact && (
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-2xl border border-white/15 bg-black/35 px-3 py-2 text-white backdrop-blur-md">
+          <span className="text-[11px]">แบบจำลองตามขอบเขต GPS</span>
+          <span className="flex items-center gap-1 text-[10px] text-[#c8ffb8]">
+            <Box className="size-3.5" /> มุมมอง 3D
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PlotsPage() {
   const { plots, addPlot, isLoaded } = usePlots();
   const [openDetail, setOpenDetail] = useState<string | null>(null);
+  const [selected3DPlotId, setSelected3DPlotId] = useState<string | null>(null);
+  const [mapView, setMapView] = useState<"2d" | "3d">("2d");
 
   // Dialog states
   const [isOpen, setIsOpen] = useState(false);
@@ -495,7 +610,7 @@ function PlotsPage() {
         enableHighAccuracy: true,
         timeout: 8000,
         maximumAge: 1000,
-      }
+      },
     );
 
     return () => {
@@ -523,6 +638,10 @@ function PlotsPage() {
     const totalRai = r + n / 4 + w / 400;
     return { rai: r, ngan: n, wa: w, totalRai };
   }, [sqmArea, manualRai, manualNgan, manualWa, method]);
+
+  useEffect(() => {
+    if (gpsCoords.length === 3) setMapView("3d");
+  }, [gpsCoords.length]);
 
   // เมื่อผู้ใช้เลือกพืชพรีเซ็ต ให้เปลี่ยนไอคอนอีโมจิอัตโนมัติ
   const handleSelectPresetCrop = (name: string, emoji: string) => {
@@ -580,6 +699,7 @@ function PlotsPage() {
 
   const handleResetWalk = () => {
     setGpsCoords([]);
+    setMapView("2d");
     toast.info("เคลียร์ตำแหน่งปักหมุดใหม่ทั้งหมดแล้ว");
   };
 
@@ -616,15 +736,20 @@ function PlotsPage() {
       trees: parseInt(treeCount) || 0,
       area: parseFloat(thaiArea.totalRai.toFixed(2)) || 0,
       gps: gpsStr,
+      boundary:
+        method === "walk" || method === "map"
+          ? gpsCoords.map(({ lat, lng }) => ({ lat, lng }))
+          : undefined,
     });
 
     toast.success("บันทึกข้อมูลแปลงพืชใหม่สำเร็จ! 🎉");
     setIsOpen(false);
-    
+
     // รีเซ็ตฟอร์ม
     setStep(1);
     setMethod(null);
     setGpsCoords([]);
+    setMapView("2d");
     setSinglePoint(null);
     setPlotName("");
     setCropType("");
@@ -634,14 +759,14 @@ function PlotsPage() {
     setTreeCount("100");
   };
 
+  const selected3DPlot = plots.find((plot) => plot.id === selected3DPlotId);
+
   return (
     <AppShell
       title="จัดการแปลง"
       subtitle={
         isLoaded
-          ? `ทั้งหมด ${plots.length} แปลง · ${plots
-              .reduce((s, p) => s + p.area, 0)
-              .toFixed(1)} ไร่`
+          ? `ทั้งหมด ${plots.length} แปลง · ${plots.reduce((s, p) => s + p.area, 0).toFixed(1)} ไร่`
           : "กำลังโหลดข้อมูล..."
       }
     >
@@ -654,10 +779,20 @@ function PlotsPage() {
 
       <div className="space-y-4">
         {plots.map((p) => (
-          <Card key={p.id}>
+          <Card key={p.id} className="overflow-hidden p-3">
+            <button
+              onClick={() => setSelected3DPlotId(p.id)}
+              className="group relative mb-4 block w-full text-left"
+              aria-label={`เปิดแผนที่สามมิติของ ${p.name}`}
+            >
+              <Garden3DView points={p.boundary ?? []} name={p.name} area={p.area} compact />
+              <span className="absolute bottom-3 right-3 flex items-center gap-1 rounded-xl bg-white/92 px-2.5 py-2 text-[11px] font-bold text-primary shadow-lg backdrop-blur">
+                <Maximize2 className="size-3.5" /> ดู 3D
+              </span>
+            </button>
             <div className="flex items-start gap-3">
-              <span className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-2xl">
-                {p.emoji}
+              <span className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+                <TreePine className="size-6" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-foreground">{p.name}</p>
@@ -711,7 +846,8 @@ function PlotsPage() {
                 {p.history.map((h, i) => (
                   <li key={i} className="text-left">
                     <p className="text-xs font-semibold">
-                      {h.action} <span className="font-normal text-muted-foreground">· {h.date}</span>
+                      {h.action}{" "}
+                      <span className="font-normal text-muted-foreground">· {h.date}</span>
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">{h.note}</p>
                   </li>
@@ -722,6 +858,44 @@ function PlotsPage() {
         ))}
       </div>
 
+      <Dialog
+        open={Boolean(selected3DPlotId)}
+        onOpenChange={(open) => !open && setSelected3DPlotId(null)}
+      >
+        <DialogContent className="max-h-[92vh] w-[94vw] max-w-md overflow-y-auto rounded-[2rem] p-3">
+          {selected3DPlot && (
+            <div className="space-y-3">
+              <DialogHeader className="px-2 pt-2 text-left">
+                <DialogTitle>{selected3DPlot.name}</DialogTitle>
+                <DialogDescription>
+                  {selected3DPlot.crop} · {selected3DPlot.area.toFixed(1)} ไร่ ·{" "}
+                  {selected3DPlot.trees} ต้น
+                </DialogDescription>
+              </DialogHeader>
+              <Garden3DView
+                points={selected3DPlot.boundary ?? []}
+                name={selected3DPlot.name}
+                area={selected3DPlot.area}
+              />
+              <div className="grid grid-cols-3 gap-2 px-1 pb-1 text-center">
+                <div className="rounded-xl bg-muted p-3">
+                  <p className="text-sm font-bold">{selected3DPlot.trees}</p>
+                  <p className="text-[10px] text-muted-foreground">จำนวนต้น</p>
+                </div>
+                <div className="rounded-xl bg-muted p-3">
+                  <p className="text-sm font-bold">{selected3DPlot.health}%</p>
+                  <p className="text-[10px] text-muted-foreground">สุขภาพ</p>
+                </div>
+                <div className="rounded-xl bg-muted p-3">
+                  <p className="text-sm font-bold">{selected3DPlot.boundary?.length ?? 4}</p>
+                  <p className="text-[10px] text-muted-foreground">จุดขอบเขต</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* dialog สำหรับบันทึกพิกัดแปลง */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-md w-[92vw] overflow-y-auto max-h-[85vh] rounded-3xl p-5 gap-4">
@@ -731,7 +905,12 @@ function PlotsPage() {
               เพิ่มแปลงเพาะปลูกใหม่ด้วย GPS
             </DialogTitle>
             <DialogDescription className="text-center text-xs">
-              ขั้นตอนที่ {step} จาก 3: {step === 1 ? "เลือกวิธีบันทึก" : step === 2 ? "วัดพิกัดและขนาดพื้นที่" : "ข้อมูลเพาะปลูก"}
+              ขั้นตอนที่ {step} จาก 3:{" "}
+              {step === 1
+                ? "เลือกวิธีบันทึก"
+                : step === 2
+                  ? "วัดพิกัดและขนาดพื้นที่"
+                  : "ข้อมูลเพาะปลูก"}
             </DialogDescription>
           </DialogHeader>
 
@@ -755,7 +934,8 @@ function PlotsPage() {
                 <div>
                   <p className="text-sm font-bold text-foreground">วาดขอบเขตบนแผนที่ดาวเทียม</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    ค้นหาแปลงเพาะปลูกของคุณบนภาพดาวเทียม แล้วจิ้มหน้าจอเพื่อวาดและลากปรับปรุงขนาดแปลงแบบเรียลไทม์
+                    ค้นหาแปลงเพาะปลูกของคุณบนภาพดาวเทียม
+                    แล้วจิ้มหน้าจอเพื่อวาดและลากปรับปรุงขนาดแปลงแบบเรียลไทม์
                   </p>
                 </div>
               </button>
@@ -773,7 +953,8 @@ function PlotsPage() {
                 <div>
                   <p className="text-sm font-bold text-foreground">เดินปักหมุดรอบมุมแปลง</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    เดินรอบแปลงแล้วกดปุ่มปักพิกัดตามมุมแปลงจริง ระบบจะวาดแผนที่รูปเหลี่ยมและคำนวณพื้นที่เป็นไร่ให้โดยอัตโนมัติ
+                    เดินรอบแปลงแล้วกดปุ่มปักพิกัดตามมุมแปลงจริง
+                    ระบบจะวาดแผนที่รูปเหลี่ยมและคำนวณพื้นที่เป็นไร่ให้โดยอัตโนมัติ
                   </p>
                 </div>
               </button>
@@ -789,9 +970,12 @@ function PlotsPage() {
                   <MapPin className="size-5" />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-foreground">บันทึกจากจุดปัจจุบัน (ปักหมุดตรงกลาง)</p>
+                  <p className="text-sm font-bold text-foreground">
+                    บันทึกจากจุดปัจจุบัน (ปักหมุดตรงกลาง)
+                  </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    ใช้พิกัดตำแหน่งปัจจุบันที่คุณยืนอยู่เป็นพิกัดอ้างอิงแปลง และกรอกตัวเลขพื้นที่แปลงหน่วย ไร่-งาน-ตารางวา ด้วยตนเอง
+                    ใช้พิกัดตำแหน่งปัจจุบันที่คุณยืนอยู่เป็นพิกัดอ้างอิงแปลง
+                    และกรอกตัวเลขพื้นที่แปลงหน่วย ไร่-งาน-ตารางวา ด้วยตนเอง
                   </p>
                 </div>
               </button>
@@ -817,9 +1001,7 @@ function PlotsPage() {
                     </p>
                   </div>
                 </div>
-                {isWatching && (
-                  <RefreshCw className="size-4 text-primary animate-spin shrink-0" />
-                )}
+                {isWatching && <RefreshCw className="size-4 text-primary animate-spin shrink-0" />}
               </div>
 
               {gpsError && (
@@ -829,20 +1011,48 @@ function PlotsPage() {
                 </div>
               )}
 
+              {(method === "map" || method === "walk") && gpsCoords.length >= 3 && (
+                <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1">
+                  <button
+                    onClick={() => setMapView("2d")}
+                    className={`rounded-lg py-2 text-xs font-bold transition-colors ${mapView === "2d" ? "bg-card text-primary shadow-sm" : "text-muted-foreground"}`}
+                  >
+                    แผนที่ 2D
+                  </button>
+                  <button
+                    onClick={() => setMapView("3d")}
+                    className={`flex items-center justify-center gap-1 rounded-lg py-2 text-xs font-bold transition-colors ${mapView === "3d" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground"}`}
+                  >
+                    <Box className="size-3.5" /> แบบจำลอง 3D
+                  </button>
+                </div>
+              )}
+
               {/* คอนเทนต์ตามโหมด: วาดบนดาวเทียม */}
               {method === "map" && (
                 <div className="space-y-3">
-                  <SatelliteMapDrawer
-                    points={gpsCoords}
-                    setPoints={setGpsCoords}
-                    centerPoint={currentLocation}
-                  />
+                  {mapView === "3d" && gpsCoords.length >= 3 ? (
+                    <Garden3DView
+                      points={gpsCoords}
+                      name={plotName.trim() || "แปลงใหม่ของฉัน"}
+                      area={thaiArea.totalRai}
+                    />
+                  ) : (
+                    <SatelliteMapDrawer
+                      points={gpsCoords}
+                      setPoints={setGpsCoords}
+                      centerPoint={currentLocation}
+                    />
+                  )}
                   <p className="text-[10px] text-muted-foreground text-center">
-                    * แตะบนแผนที่เพื่อเพิ่มปักหมุดมุมแปลง, ลาก Marker ย้ายเพื่อปรับแต่งมุม หรือจิ้มลบด้านล่าง
+                    * แตะบนแผนที่เพื่อเพิ่มปักหมุดมุมแปลง, ลาก Marker ย้ายเพื่อปรับแต่งมุม
+                    หรือจิ้มลบด้านล่าง
                   </p>
 
                   <div className="flex justify-between items-center bg-muted/30 p-2 rounded-xl border border-border">
-                    <span className="text-[10px] text-muted-foreground">จุดปักหมุด: {gpsCoords.length} จุด</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      จุดปักหมุด: {gpsCoords.length} จุด
+                    </span>
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
@@ -867,7 +1077,9 @@ function PlotsPage() {
 
                   {/* แสดงผลการคำนวณพื้นที่แบบสดๆ */}
                   <div className="rounded-2xl border border-primary/30 bg-primary-soft/30 p-3.5 text-center">
-                    <p className="text-[11px] text-primary font-medium">คำนวณขนาดพื้นที่รวมบนภาพดาวเทียม</p>
+                    <p className="text-[11px] text-primary font-medium">
+                      คำนวณขนาดพื้นที่รวมบนภาพดาวเทียม
+                    </p>
                     <div className="mt-1 flex items-baseline justify-center gap-1 text-primary">
                       <span className="text-2xl font-black">{thaiArea.rai}</span>
                       <span className="text-xs font-semibold mr-2">ไร่</span>
@@ -882,7 +1094,8 @@ function PlotsPage() {
                       </p>
                     ) : (
                       <p className="text-[9px] text-warning mt-1 flex items-center justify-center gap-1">
-                        <BadgeInfo className="size-3" /> แตะบนแผนที่ดาวเทียมอย่างน้อย 3 จุดเพื่อเริ่มวาดขอบเขตแปลง
+                        <BadgeInfo className="size-3" /> แตะบนแผนที่ดาวเทียมอย่างน้อย 3
+                        จุดเพื่อเริ่มวาดขอบเขตแปลง
                       </p>
                     )}
                   </div>
@@ -893,7 +1106,15 @@ function PlotsPage() {
               {method === "walk" && (
                 <div className="space-y-3">
                   {/* แสดงรูปขอบเขตแปลง */}
-                  <PolygonPreview coords={gpsCoords} />
+                  {mapView === "3d" && gpsCoords.length >= 3 ? (
+                    <Garden3DView
+                      points={gpsCoords}
+                      name={plotName.trim() || "แปลงใหม่ของฉัน"}
+                      area={thaiArea.totalRai}
+                    />
+                  ) : (
+                    <PolygonPreview coords={gpsCoords} />
+                  )}
 
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -916,7 +1137,9 @@ function PlotsPage() {
 
                   {gpsCoords.length > 0 && (
                     <div className="flex justify-between items-center bg-muted/30 p-2 rounded-xl border border-border">
-                      <span className="text-[10px] text-muted-foreground">จุดปักหมุดล่าสุด: P{gpsCoords.length}</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        จุดปักหมุดล่าสุด: P{gpsCoords.length}
+                      </span>
                       <button
                         onClick={handleResetWalk}
                         className="text-[10px] text-destructive hover:underline flex items-center gap-0.5 cursor-pointer"
@@ -943,7 +1166,8 @@ function PlotsPage() {
                       </p>
                     ) : (
                       <p className="text-[9px] text-warning mt-1 flex items-center justify-center gap-1">
-                        <BadgeInfo className="size-3" /> ต้องปักหมุดอย่างน้อย 3 จุดเพื่อเริ่มคำนวณพื้นที่ (มีแล้ว {gpsCoords.length})
+                        <BadgeInfo className="size-3" /> ต้องปักหมุดอย่างน้อย 3
+                        จุดเพื่อเริ่มคำนวณพื้นที่ (มีแล้ว {gpsCoords.length})
                       </p>
                     )}
                   </div>
@@ -978,7 +1202,9 @@ function PlotsPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-foreground">ระบุขนาดพื้นที่ของแปลง</label>
+                    <label className="text-xs font-bold text-foreground">
+                      ระบุขนาดพื้นที่ของแปลง
+                    </label>
                     <div className="grid grid-cols-3 gap-2">
                       <div>
                         <div className="relative">
@@ -989,7 +1215,9 @@ function PlotsPage() {
                             onChange={(e) => setManualRai(e.target.value)}
                             className="w-full text-right pr-6 py-2 border border-border rounded-xl text-sm focus:outline-primary"
                           />
-                          <span className="absolute right-2 top-2 text-xs text-muted-foreground">ไร่</span>
+                          <span className="absolute right-2 top-2 text-xs text-muted-foreground">
+                            ไร่
+                          </span>
                         </div>
                       </div>
                       <div>
@@ -1002,7 +1230,9 @@ function PlotsPage() {
                             onChange={(e) => setManualNgan(e.target.value)}
                             className="w-full text-right pr-8 py-2 border border-border rounded-xl text-sm focus:outline-primary"
                           />
-                          <span className="absolute right-2 top-2 text-xs text-muted-foreground">งาน</span>
+                          <span className="absolute right-2 top-2 text-xs text-muted-foreground">
+                            งาน
+                          </span>
                         </div>
                       </div>
                       <div>
@@ -1016,7 +1246,9 @@ function PlotsPage() {
                             onChange={(e) => setManualWa(e.target.value)}
                             className="w-full text-right pr-8 py-2 border border-border rounded-xl text-sm focus:outline-primary"
                           />
-                          <span className="absolute right-2 top-2 text-xs text-muted-foreground">ตร.ว.</span>
+                          <span className="absolute right-2 top-2 text-xs text-muted-foreground">
+                            ตร.ว.
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1119,7 +1351,9 @@ function PlotsPage() {
                         onChange={(e) => setAgeYears(e.target.value)}
                         className="w-full text-right pr-6 py-2 border border-border rounded-xl text-sm focus:outline-primary"
                       />
-                      <span className="absolute right-2 top-2 text-[10px] text-muted-foreground">ปี</span>
+                      <span className="absolute right-2 top-2 text-[10px] text-muted-foreground">
+                        ปี
+                      </span>
                     </div>
                     <div className="relative flex-1">
                       <input
@@ -1130,7 +1364,9 @@ function PlotsPage() {
                         onChange={(e) => setAgeMonths(e.target.value)}
                         className="w-full text-right pr-6 py-2 border border-border rounded-xl text-sm focus:outline-primary"
                       />
-                      <span className="absolute right-2 top-2 text-[10px] text-muted-foreground">เดือน</span>
+                      <span className="absolute right-2 top-2 text-[10px] text-muted-foreground">
+                        เดือน
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1145,7 +1381,9 @@ function PlotsPage() {
                       onChange={(e) => setTreeCount(e.target.value)}
                       className="w-full text-right pr-8 py-2 border border-border rounded-xl text-sm focus:outline-primary"
                     />
-                    <span className="absolute right-2 top-2 text-xs text-muted-foreground">ต้น</span>
+                    <span className="absolute right-2 top-2 text-xs text-muted-foreground">
+                      ต้น
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1164,7 +1402,8 @@ function PlotsPage() {
                   </span>
                   <span>ขนาดพื้นที่:</span>
                   <span className="text-right text-foreground font-bold">
-                    {thaiArea.rai} ไร่ {thaiArea.ngan} งาน {thaiArea.wa} ตร.ว. ({thaiArea.totalRai.toFixed(2)} ไร่)
+                    {thaiArea.rai} ไร่ {thaiArea.ngan} งาน {thaiArea.wa} ตร.ว. (
+                    {thaiArea.totalRai.toFixed(2)} ไร่)
                   </span>
                   <span>พืชที่ปลูก:</span>
                   <span className="text-right text-foreground font-medium">

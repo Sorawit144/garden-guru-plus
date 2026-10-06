@@ -1,20 +1,8 @@
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
-import {
-  ArrowLeft,
-  Bell,
-  ChevronDown,
-  Crown,
-  Home,
-  LayoutGrid,
-  Leaf,
-  MessageCircle,
-  ScanLine,
-} from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { ArrowLeft, Bell, Home, LayoutGrid, Leaf, MessageCircle, ScanLine } from "lucide-react";
+import type { ReactNode } from "react";
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useOrganizationPlan } from "@/hooks/useOrganizationPlan";
-import { PLAN_DETAILS, type PlanTier } from "@/lib/organization-data";
 
 const navItems = [
   { to: "/", label: "หน้าหลัก", icon: Home, exact: true },
@@ -36,8 +24,6 @@ export function AppShell({
   const router = useRouter();
   const location = useLocation();
   const showBackButton = location.pathname !== "/";
-  const [showPlanPicker, setShowPlanPicker] = useState(false);
-  const { tier, changeTier } = useOrganizationPlan();
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_0%_100%,var(--color-primary-soft),transparent_43%),linear-gradient(135deg,var(--color-secondary),var(--color-background))]">
@@ -66,15 +52,6 @@ export function AppShell({
               </div>
             </div>
             <div className="relative flex shrink-0 items-center gap-2">
-              <button
-                onClick={() => setShowPlanPicker((open) => !open)}
-                className="flex items-center gap-1 rounded-xl border border-border bg-card px-2 py-2 text-xs font-semibold text-primary"
-                aria-label="สลับแพ็กเกจจำลอง"
-              >
-                <Crown className="size-3.5" />
-                <span>{PLAN_DETAILS[tier].name}</span>
-                <ChevronDown className="size-3.5" />
-              </button>
               <ThemeToggle />
               <Link
                 to="/notifications"
@@ -84,26 +61,6 @@ export function AppShell({
                 <Bell className="size-5" />
                 <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-warning" />
               </Link>
-              {showPlanPicker ? (
-                <div className="absolute top-12 right-0 z-30 w-60 rounded-2xl border border-border bg-card p-2 shadow-[var(--shadow-card)]">
-                  <p className="px-2 py-1 text-xs text-muted-foreground">โหมดจำลองทั้งระบบ</p>
-                  {(["free", "pro", "promax"] as PlanTier[]).map((item) => (
-                    <button
-                      key={item}
-                      onClick={() => {
-                        changeTier(item);
-                        setShowPlanPicker(false);
-                      }}
-                      className={`w-full rounded-xl px-3 py-2 text-left ${tier === item ? "bg-primary-soft text-primary" : "hover:bg-muted"}`}
-                    >
-                      <p className="text-sm font-semibold">{PLAN_DETAILS[item].name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {PLAN_DETAILS[item].description}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              ) : null}
             </div>
           </div>
         </header>

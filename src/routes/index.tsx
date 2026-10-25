@@ -12,9 +12,9 @@ import {
   Tags,
   X,
 } from "lucide-react";
-import { AppShell, Badge, Card, Progress, SectionTitle, baht } from "@/components/AppShell";
+import { AppShell, Badge, Card, Progress, SectionTitle } from "@/components/AppShell";
 import { BrandMark } from "@/components/BrandMark";
-import { notifications, todayTasks, weather } from "@/lib/farm-data";
+import { todayTasks, weather } from "@/lib/farm-data";
 import { usePlots } from "@/hooks/usePlots";
 
 export const Route = createFileRoute("/")({
@@ -41,23 +41,7 @@ function Dashboard() {
     plots.length > 0 ? Math.round(plots.reduce((s, p) => s + p.health, 0) / plots.length) : 0;
   const area = plots.reduce((s, p) => s + p.area, 0);
 
-  const [transactions, setTransactions] = useState<any[]>([]);
   const [showTrainingShortcut, setShowTrainingShortcut] = useState(true);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const loadTx = () => {
-      const stored = localStorage.getItem("garden_guru_transactions");
-      if (stored) {
-        try {
-          setTransactions(JSON.parse(stored));
-        } catch (e) {}
-      }
-    };
-    loadTx();
-    window.addEventListener("transactions_updated", loadTx);
-    return () => window.removeEventListener("transactions_updated", loadTx);
-  }, []);
 
   useEffect(() => {
     if (localStorage.getItem("garden_guru_training_shortcut_closed") === "true")
@@ -68,9 +52,6 @@ function Dashboard() {
     setShowTrainingShortcut(false);
     localStorage.setItem("garden_guru_training_shortcut_closed", "true");
   };
-
-  const income = transactions.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
-  const cost = transactions.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
   return (
     <AppShell title="สวัสดี ชาวสวน" subtitle="ศุกร์ที่ 7 สิงหาคม 2569">
@@ -255,83 +236,6 @@ function Dashboard() {
         ))}
       </Card>
 
-      <SectionTitle
-        action={
-          <Link to="/plots" className="text-xs font-medium text-primary">
-            ดูทั้งหมด
-          </Link>
-        }
-      >
-        แปลงของฉัน
-      </SectionTitle>
-      <div className="space-y-3">
-        {plots.map((p) => (
-          <Card key={p.id}>
-            <div className="flex items-center gap-3">
-              <BrandMark size="md" className="bg-primary-soft text-primary shadow-none" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{p.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  {p.crop} · {p.trees} ต้น · {p.area} ไร่
-                </p>
-              </div>
-              <span className="text-sm font-semibold text-primary">{p.health}%</span>
-            </div>
-            <div className="mt-3">
-              <Progress value={p.health} />
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      <SectionTitle
-        action={
-          <Link to="/costs" className="text-xs font-medium text-primary">
-            รายละเอียด
-          </Link>
-        }
-      >
-        สรุปการเงินเดือนนี้
-      </SectionTitle>
-      <Card>
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div>
-            <p className="text-xs text-muted-foreground">รายได้</p>
-            <p className="text-sm font-bold text-primary">{baht(income)}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">ต้นทุน</p>
-            <p className="text-sm font-bold text-destructive">{baht(cost)}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">กำไร</p>
-            <p className="text-sm font-bold">{baht(income - cost)}</p>
-          </div>
-        </div>
-      </Card>
-
-      <SectionTitle
-        action={
-          <Link to="/notifications" className="text-xs font-medium text-primary">
-            ทั้งหมด
-          </Link>
-        }
-      >
-        แจ้งเตือนล่าสุด
-      </SectionTitle>
-      <Card className="space-y-3">
-        {notifications.slice(0, 3).map((n) => (
-          <div key={n.id} className="flex items-start gap-3">
-            <span className="mt-1 size-2 shrink-0 rounded-full bg-primary" />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm">{n.title}</p>
-              <p className="text-xs text-muted-foreground">
-                {n.type} · {n.time}
-              </p>
-            </div>
-          </div>
-        ))}
-      </Card>
     </AppShell>
   );
 }

@@ -6,6 +6,7 @@ import {
   CloudSun,
   Droplets,
   GraduationCap,
+  MapPin,
   Sparkles,
   Sprout,
   Tags,
@@ -93,36 +94,58 @@ function Dashboard() {
           </button>
         </div>
       )}
-      <Card className="relative overflow-hidden border-0 bg-primary px-5 py-5 text-primary-foreground shadow-[0_18px_30px_-20px_oklch(0.25_0.08_145_/_0.85)]">
-        <div className="pointer-events-none absolute -right-8 -top-12 size-44 rounded-full bg-white/10 blur-2xl" />
-        <div className="relative flex items-start justify-between gap-3">
+      <section className="farm-hero relative min-h-[340px] overflow-hidden rounded-[2rem] p-5 text-white shadow-[0_22px_36px_-24px_oklch(0.2_0.06_145_/_0.8)]">
+        <div className="absolute -top-10 -right-12 size-52 rounded-full bg-amber-200/20 blur-3xl" />
+        <div className="relative flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-primary-foreground/80">สุขภาพสวนโดยรวม</p>
-            <div className="mt-1 flex items-end gap-2">
-              <span className="text-4xl font-bold tracking-tight">{avgHealth}</span>
-              <span className="mb-1 text-sm text-primary-foreground/85">/ 100 · ดี</span>
+            <p className="text-xs font-medium tracking-[0.12em] text-white/65">GARDEN JOURNAL · TODAY</p>
+            <h2 className="mt-2 max-w-64 text-[1.7rem] font-bold leading-tight tracking-tight">
+              สวนพร้อมเติบโต<br />อย่างมั่นใจ
+            </h2>
+          </div>
+          <BrandMark size="md" className="bg-white/15 text-white shadow-none ring-1 ring-white/20" />
+        </div>
+        <div className="absolute inset-x-5 bottom-5">
+          <div className="glass-panel rounded-3xl p-4">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="text-xs font-medium text-white/70">สุขภาพสวนโดยรวม</p>
+                <div className="mt-1 flex items-end gap-2">
+                  <span className="text-4xl font-bold tracking-tight">{avgHealth}</span>
+                  <span className="mb-1 text-sm text-white/75">/ 100 · ดีมาก</span>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-medium text-white/90">
+                <MapPin className="size-3" /> 41.5 ไร่
+              </span>
+            </div>
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/20">
+              <div className="h-full rounded-full bg-amber-200" style={{ width: `${avgHealth}%` }} />
             </div>
           </div>
-          <BrandMark size="md" className="border border-white/15 bg-white/15 shadow-none" />
         </div>
-        <div className="relative mt-4 h-2 w-full overflow-hidden rounded-full bg-white/25">
-          <div className="h-full rounded-full bg-white/90" style={{ width: `${avgHealth}%` }} />
-        </div>
-        <div className="relative mt-5 grid grid-cols-3 gap-2 text-center">
-          <div className="rounded-2xl border border-white/10 bg-white/10 py-2.5">
-            <p className="text-lg font-bold">{plots.length}</p>
-            <p className="text-[11px] text-primary-foreground/80">แปลง</p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/10 py-2.5">
-            <p className="text-lg font-bold">{area}</p>
-            <p className="text-[11px] text-primary-foreground/80">ไร่</p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/10 py-2.5">
-            <p className="text-lg font-bold">{plots.reduce((s, p) => s + p.trees, 0)}</p>
-            <p className="text-[11px] text-primary-foreground/80">ต้น</p>
-          </div>
-        </div>
-      </Card>
+      </section>
+
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
+        {[
+          ["วันนี้", `${weather.now.temp}°`, CloudSun],
+          ["แปลงทั้งหมด", `${plots.length} แปลง`, Sprout],
+          ["งานค้าง", `${todayTasks.filter((t) => !t.done).length} งาน`, Sparkles],
+        ].map(([label, value, Icon]) => {
+          const StatusIcon = Icon as typeof CloudSun;
+          return (
+            <div key={String(label)} className="surface-card flex min-w-36 items-center gap-2.5 px-3.5 py-3">
+              <span className="flex size-9 items-center justify-center rounded-full bg-primary-soft text-primary">
+                <StatusIcon className="size-4" />
+              </span>
+              <span>
+                <span className="block text-[11px] text-muted-foreground">{label}</span>
+                <span className="block text-sm font-bold">{value}</span>
+              </span>
+            </div>
+          );
+        })}
+      </div>
 
       <div>
         <div className="mb-3 flex items-center justify-between px-1">
@@ -134,7 +157,7 @@ function Dashboard() {
             ทั้งหมด <ChevronRight className="size-3.5" />
           </Link>
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2.5">
           {[
             {
               to: "/market" as const,
@@ -171,7 +194,7 @@ function Dashboard() {
 
       <div className="grid grid-cols-2 gap-3">
         <Link to="/weather">
-          <Card className="h-full transition-transform duration-200 hover:-translate-y-0.5">
+          <Card className="h-full bg-[linear-gradient(145deg,var(--color-card),var(--color-secondary))] transition-transform duration-200 hover:-translate-y-0.5">
             <div className="flex items-start justify-between">
               <p className="text-xs font-medium text-muted-foreground">สภาพอากาศ</p>
               <CloudSun className="size-5 text-warning" />
@@ -184,7 +207,7 @@ function Dashboard() {
           </Card>
         </Link>
         <Link to="/recommend">
-          <Card className="h-full transition-transform duration-200 hover:-translate-y-0.5">
+          <Card className="h-full bg-[linear-gradient(145deg,var(--color-primary-soft),var(--color-card))] transition-transform duration-200 hover:-translate-y-0.5">
             <div className="flex items-start justify-between">
               <p className="text-xs font-medium text-muted-foreground">คำแนะนำ AI</p>
               <Sparkles className="size-4 text-primary" />

@@ -26,16 +26,16 @@ export function AppShell({
   const showBackButton = location.pathname !== "/";
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_0%_100%,var(--color-primary-soft),transparent_43%),linear-gradient(135deg,var(--color-secondary),var(--color-background))]">
-      <div className="app-frame mx-auto flex min-h-screen w-full max-w-md flex-col bg-background">
-        <header className="sticky top-0 z-20 border-b border-border/70 bg-card/92 px-5 pt-[max(1.35rem,env(safe-area-inset-top))] pb-5 text-foreground backdrop-blur-xl">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_0%_100%,var(--color-primary-soft),transparent_45%),linear-gradient(135deg,var(--color-secondary),var(--color-background))]">
+      <div className="app-frame mx-auto flex min-h-screen w-full max-w-[430px] flex-col bg-background">
+        <header className="sticky top-0 z-20 bg-background/88 px-5 pt-[max(1.15rem,env(safe-area-inset-top))] pb-4 text-foreground backdrop-blur-xl">
           <div className="flex items-start justify-between gap-3">
             <div className="relative flex min-w-0 items-start gap-3">
               {showBackButton ? (
                 <button
                   type="button"
                   onClick={() => router.history.back()}
-                  className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl border border-border bg-primary-soft text-primary transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   aria-label="ย้อนกลับ"
                 >
                   <ArrowLeft className="size-5" />
@@ -55,7 +55,7 @@ export function AppShell({
               <ThemeToggle />
               <Link
                 to="/notifications"
-                className="relative rounded-2xl border border-border bg-primary-soft p-2.5 text-primary transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="relative rounded-full bg-primary-soft p-2.5 text-primary transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 aria-label="การแจ้งเตือน"
               >
                 <Bell className="size-5" />
@@ -65,17 +65,17 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 space-y-6 px-4 pt-5 pb-32">{children}</main>
+        <main className="flex-1 space-y-7 px-4 pt-3 pb-32">{children}</main>
 
-        <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md px-4 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
-          <ul className="flex items-stretch justify-between gap-1 rounded-[1.5rem] border border-border bg-card/95 p-2 shadow-[var(--shadow-soft)] backdrop-blur-2xl">
+        <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-[430px] px-4 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
+          <ul className="flex items-stretch justify-between gap-1 rounded-[1.35rem] bg-card/95 p-2 shadow-[var(--shadow-soft)] backdrop-blur-2xl">
             {navItems.map((item) => (
               <li key={item.to} className="min-w-0 flex-1">
                 <Link
                   to={item.to}
                   activeOptions={{ exact: item.exact }}
                   aria-label={item.label}
-                  className="group relative flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-[1.15rem] px-1 py-2 text-[11px] font-medium text-muted-foreground transition-all duration-300 hover:bg-primary-soft active:scale-95 data-[status=active]:bg-primary data-[status=active]:text-primary-foreground data-[status=active]:shadow-[var(--shadow-card)]"
+                  className="group relative flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-2 text-[11px] font-medium text-muted-foreground transition-all duration-300 hover:bg-primary-soft active:scale-95 data-[status=active]:bg-primary data-[status=active]:text-primary-foreground data-[status=active]:shadow-[var(--shadow-card)]"
                 >
                   <item.icon
                     className="size-5 shrink-0 transition-transform duration-300 group-data-[status=active]:-translate-y-0.5 group-data-[status=active]:scale-110"
@@ -101,7 +101,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
     <div className="flex min-h-7 items-center justify-between gap-3 px-1">
-      <h2 className="border-l-3 border-primary pl-2.5 text-[15px] font-bold tracking-tight text-foreground">
+      <h2 className="text-[17px] font-bold tracking-tight text-foreground">
         {children}
       </h2>
       {action ? <div className="shrink-0">{action}</div> : null}
